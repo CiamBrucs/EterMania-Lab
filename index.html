@@ -1,0 +1,4018 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Éter-maníA.</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Pacifico&family=Cormorant+Garamond:wght@500;600&display=swap');
+  :root{
+    --bg:#ffe6f2;--panel:#fff5fb;--line:rgba(255,140,180,.35);
+    --c:#ff6ba8;--m:#ff9ec8;--g:#7edcc8;--t:#5a3a55;--u:#c080a0;
+    --glow:#ffd0e8;--mist:#e8f4ff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:
+      radial-gradient(ellipse at 20% 10%,#fff0f8 0%,transparent 50%),
+      radial-gradient(ellipse at 80% 0%,#e8f4ff 0%,transparent 45%),
+      radial-gradient(ellipse at 50% 100%,#ffe8f0 0%,#ffd6ea 40%,#f5e8ff 100%);
+    color:var(--t);font-family:Outfit,system-ui,sans-serif;min-height:100vh;
+    overflow-x:hidden;overflow-y:auto;
+    display:flex;flex-direction:column;align-items:center;padding:.3rem .45rem 1rem}
+  h1{font-family:Pacifico,cursive;font-size:1.55rem;font-weight:400;
+    background:linear-gradient(120deg,#ff5a9e,#ff9ec8 40%,#7ec8f0 85%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.25;letter-spacing:.02em;
+    filter:drop-shadow(0 2px 0 rgba(255,150,190,.35))}
+  .sub{font:.52rem Outfit,sans-serif;color:var(--u);margin:.06rem 0 .22rem}
+  .layout{display:grid;grid-template-columns:1fr 320px;gap:.45rem;width:100%;max-width:1280px;align-items:start}
+  @media(max-width:840px){.layout{grid-template-columns:1fr}}
+  .stage{background:linear-gradient(165deg,#0a1020 0%,#060a14 50%,#080c18 100%);border:2px solid rgba(120,140,180,.35);
+    border-radius:18px;overflow:hidden;display:flex;flex-direction:column;
+    box-shadow:0 10px 32px rgba(0,0,20,.45), inset 0 0 40px rgba(30,50,90,.15)}
+  .stage-h{display:none}
+  #field{width:100%;aspect-ratio:1.25;min-height:300px;display:block;cursor:grab;touch-action:none}
+  #field:active{cursor:grabbing}
+  .side{display:flex;flex-direction:column}
+  .card{background:linear-gradient(165deg,#fffafd 0%,#fff0f6 100%);border:2px solid rgba(255,160,190,.35);
+    border-radius:18px;padding:.4rem .42rem;display:flex;flex-direction:column;gap:0;
+    box-shadow:0 8px 28px rgba(255,120,170,.14)}
+  .sec{font:.45rem Outfit,sans-serif;color:#e070a0;text-transform:uppercase;letter-spacing:.07em;
+    margin:.16rem 0 .08rem;font-weight:700}
+  .sec:first-child{margin-top:0}
+  .row{display:flex;flex-wrap:wrap;gap:.15rem}
+  .sliders{display:grid;grid-template-columns:1fr 1fr;gap:.1rem .32rem}
+  .sliders label{margin:0}
+  .sliders input[type=range]{margin:.05rem 0 .04rem}
+  .regions-compact{margin-top:.12rem}
+  .regions-compact summary{
+    list-style:none;cursor:pointer;font:.48rem Outfit,sans-serif;color:#e070a0;text-transform:uppercase;
+    letter-spacing:.06em;font-weight:700;padding:.28rem .4rem;border-radius:999px;
+    background:linear-gradient(180deg,#fff,#ffe8f2);border:1.5px solid rgba(255,140,180,.4);
+    box-shadow:0 2px 0 rgba(255,150,190,.2);user-select:none}
+  .regions-compact summary::-webkit-details-marker{display:none}
+  .regions-compact summary::after{content:' ▾'; float:right;opacity:.7}
+  .regions-compact[open] summary::after{content:' ▴'}
+  .regions-compact .regions-body{padding:.28rem .1rem .1rem}
+  .regions-compact .sec{margin:.08rem 0 .02rem}
+  .regions-compact .sliders{gap:.02rem .28rem}
+  .regions-compact label{font-size:.42rem}
+  .regions-compact input[type=range]{height:2px;margin:.02rem 0 .02rem}
+  .regions-compact input[type=range]::-webkit-slider-thumb{width:8px;height:8px}
+  .regions-compact .row{margin-top:.04rem!important}
+  .regions-compact button{padding:.14rem .08rem;font-size:.44rem}
+  button{flex:1;min-width:0;background:linear-gradient(180deg,#fff,#ffe8f2);color:var(--t);
+    border:1.5px solid rgba(255,140,180,.4);border-radius:999px;padding:.22rem .14rem;
+    font:.5rem Outfit,sans-serif;cursor:pointer;line-height:1.15;
+    box-shadow:0 2px 0 rgba(255,150,190,.25)}
+  button:hover{border-color:#ff7ab0;background:linear-gradient(180deg,#fff,#ffd6ea);transform:translateY(-1px)}
+  button.on{color:#fff;border-color:#ff5a9e;background:linear-gradient(180deg,#ff8ec0,#ff5a9e);
+    box-shadow:0 2px 8px rgba(255,90,158,.35)}
+  button.el{flex:1;min-width:0;font-weight:700;padding:.2rem .04rem;font-size:.55rem;border-radius:50%}
+  button.el[data-k=H]{color:#5a9ec8} button.el[data-k=e]{color:#4aa8e0}
+  button.el[data-k=p]{color:#e06090} button.el[data-k=n]{color:#60b878}
+  button.el[data-k=γ]{color:#e0a030} button.el[data-k=φ]{color:#c060d8}
+  button.el[data-k=A]{color:#e09040} button.el[data-k=X]{color:#e050a0}
+  button.el[data-k="Ψ"]{color:#30c0b0}
+  button.el.on{color:#fff}
+  label{display:flex;justify-content:space-between;font:.48rem Outfit,sans-serif;color:var(--u)}
+  label b{color:var(--c);font-weight:600}
+  input[type=range]{-webkit-appearance:none;width:100%;height:3px;background:#ffd0e4;border-radius:3px;margin:.06rem 0 .1rem}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;
+    background:linear-gradient(135deg,#ff8ec0,#ff5a9e);cursor:pointer;border:2px solid #fff;
+    box-shadow:0 1px 5px rgba(255,100,160,.45)}
+  .lore{font:.5rem Outfit,sans-serif;line-height:1.4;color:#a06080;
+    background:linear-gradient(135deg,#fff5fa,#f0f6ff);border-radius:12px;padding:.3rem .35rem;
+    border:1.5px solid rgba(255,160,190,.3);margin-top:.12rem}
+  .lore strong{color:#ff5a9e;font-weight:600}
+  .lore em{color:#e070c0;font-style:normal}
+  .scenes{display:grid;grid-template-columns:1fr 1fr;gap:.12rem}
+  .scenes button{font-size:.48rem;padding:.2rem .1rem}
+  .goal{margin-top:.14rem;padding:.32rem .36rem;border-radius:14px;
+    background:linear-gradient(145deg,#fff0f6,#f5e8ff);border:2px solid rgba(255,140,180,.4);
+    box-shadow:inset 0 1px 0 #fff}
+  .goal.won{border-color:rgba(100,210,180,.7);background:linear-gradient(145deg,#e8fff6,#f0f8ff)}
+  .goal-title{font:.48rem Outfit,sans-serif;color:#ff5a9e;text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+  .goal-desc{font:.58rem Outfit,sans-serif;color:#5a3a55;margin:.12rem 0 .14rem;line-height:1.35}
+  .goal-bar{height:6px;background:#ffd6ea;border-radius:4px;overflow:hidden}
+  .goal-fill{height:100%;width:0%;background:linear-gradient(90deg,#ff8ec0,#7ec8f0,#ffb0d0);border-radius:4px;transition:width .2s}
+  .goal.won .goal-fill{background:linear-gradient(90deg,#7edcc8,#ff9ec8)}
+  .goal-prog{font:.46rem Outfit,sans-serif;color:#c080a0;margin-top:.1rem}
+  .goal-score{font:.5rem Outfit,sans-serif;color:#e09040;margin-top:.08rem;letter-spacing:.03em}
+  .goal-moves{font:.5rem Outfit,sans-serif;color:#6090c8;margin-top:.06rem}
+  .goal-moves.low{color:#e05070}
+  .goal.lost{border-color:rgba(240,120,140,.55);background:linear-gradient(145deg,#ffe8ec,#fff0f4)}
+  .checklist{margin:.1rem 0 0;padding:0;list-style:none}
+  .checklist li{font:.5rem Outfit,sans-serif;color:#c080a0;padding:.08rem 0;border-bottom:1px solid rgba(255,160,190,.2)}
+  .checklist li.done{color:#40b898;text-decoration:line-through;opacity:.85}
+  .checklist li.cur{color:#5a3a55;font-weight:600}
+  .checklist li .ico{margin-right:.2rem}
+  .win-banner{position:absolute;inset:0;display:none;align-items:center;justify-content:center;
+    flex-direction:column;gap:.35rem;background:rgba(255,230,245,.72);pointer-events:none;z-index:2}
+  .win-banner.show{display:none!important}
+  .win-banner span{font-family:Pacifico,cursive;font-size:1.7rem;color:#ff5a9e;
+    text-shadow:0 2px 0 #fff,0 0 20px rgba(255,150,200,.6);letter-spacing:.03em}
+  .win-banner .win-sub{font:.7rem Outfit,sans-serif;color:#e09040}
+  .win-banner.lose span{color:#e05070;text-shadow:0 2px 0 #fff,0 0 16px rgba(240,100,130,.4)}
+  .stage{position:relative}
+  .combo-toast{display:none}
+
+  /* ── Ficha de laboratorio (formato hoja de personaje) ── */
+  .sheet{display:flex;flex-direction:column;gap:.35rem}
+  .sheet-panel{background:linear-gradient(180deg,#e8ecf2 0%,#d8dee8 100%);
+    border:2px solid #9aa8bc;border-radius:14px;padding:.35rem .38rem .4rem;
+    box-shadow:inset 0 1px 0 #fff,0 4px 14px rgba(40,50,70,.12);position:relative}
+  .sheet-panel.almas{background:linear-gradient(180deg,#eceff4,#d5dbe6)}
+  .sheet-head{position:absolute;top:-.55rem;left:50%;transform:translateX(-50%);
+    background:#1a1e28;color:#f0f4f8;font:.55rem Outfit,sans-serif;font-weight:700;
+    letter-spacing:.06em;text-transform:uppercase;padding:.18rem .7rem;border-radius:999px;
+    white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+  .sheet-head.soft{background:#2a3344}
+  .soul-pick{display:flex;flex-wrap:wrap;gap:.18rem;justify-content:center;margin:.45rem 0 .3rem}
+  .soul-pick .el{width:1.65rem;height:1.65rem;border-radius:8px;font-size:.72rem;
+    border:1.5px solid #8a9bb0;background:#f4f6fa;color:#2a3548;padding:0}
+  .soul-pick .el.on{background:#2a3548;color:#fff;border-color:#1a2030;box-shadow:0 0 0 2px rgba(100,140,200,.35)}
+  .abil{display:flex;align-items:stretch;gap:.35rem;margin:.22rem 0}
+  .abil-box{min-width:4.2rem;width:4.2rem;border:2px solid #5a6a80;border-radius:10px;
+    background:#f7f8fb;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:.28rem .15rem;box-shadow:inset 0 1px 0 #fff}
+  .abil-val{font:700 1.05rem Outfit,sans-serif;color:#1a2030;line-height:1}
+  .abil-name{font:.38rem Outfit,sans-serif;color:#4a5a70;text-transform:uppercase;
+    letter-spacing:.04em;margin-top:.12rem;text-align:center;font-weight:700}
+  .abil-skills{flex:1;display:flex;flex-direction:column;justify-content:center;gap:.06rem;
+    border-top:1px solid #a0aec0;border-bottom:1px solid #a0aec0;padding:.12rem 0 .12rem .15rem}
+  .abil-skills span{font:.42rem Outfit,sans-serif;color:#3a4a5c;display:flex;align-items:center;gap:.25rem}
+  .abil-skills i{width:.42rem;height:.42rem;border-radius:50%;border:1.5px solid #5a6a80;
+    display:inline-block;flex-shrink:0;background:#f7f8fb}
+  .abil-skills i.on{background:#4a90d0;border-color:#2a5080}
+  .sheet-panel.escenarios{padding:.28rem .3rem .22rem;margin-top:.15rem}
+  .sheet-panel.escenarios .sheet-head{font:.48rem Outfit,sans-serif;padding:.12rem .5rem}
+  .scene-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,auto);
+    gap:.12rem .14rem;margin:.42rem 0 .08rem}
+  .scene-cell{border:1.5px solid #6a7a90;border-radius:6px;aspect-ratio:auto;min-height:0;
+    height:1.15rem;background:#f4f6fa;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    font:.36rem Outfit,sans-serif;font-weight:700;color:#2a3548;cursor:pointer;
+    text-transform:uppercase;letter-spacing:.03em;padding:0 .12rem;line-height:1;
+    box-shadow:inset 0 1px 0 #fff}
+  .scene-cell:hover{background:#e8eef8}
+  .scene-cell.on{background:#2a3548;color:#fff;border-color:#1a2030}
+  .scene-cell.hex{border-radius:6px}
+  .medio-body{margin-top:.55rem;padding:0 .1rem .15rem}
+  .medio-body .sliders{display:flex;flex-direction:column;gap:.28rem}
+  .medio-body label{display:flex;justify-content:space-between;font:.48rem Outfit,sans-serif;
+    color:#3a4a5c;font-weight:600;margin-bottom:.06rem}
+  .medio-body label b{color:#1a2030;font-weight:700}
+  .medio-body input[type=range]{width:100%;accent-color:#4a6a90}
+  .medio-actions{display:flex;flex-wrap:wrap;gap:.2rem;margin-top:.35rem}
+  .medio-actions button{font-size:.48rem;padding:.22rem .4rem;border-radius:8px;
+    border:1.5px solid #6a7a90;background:#f0f3f8;color:#2a3548;cursor:pointer;font-weight:600}
+  .medio-actions button.on{background:#2a3548;color:#fff}
+  .sheet .sec{display:none}
+
+  .goal{display:none!important}
+  .win-banner{display:none!important}
+  .attr-table-wrap{max-height:11rem;overflow:auto;margin:.1rem 0 .2rem;
+    border:1px solid rgba(120,160,200,.2);border-radius:10px;background:rgba(12,20,36,.45)}
+  .attr-table{width:100%;border-collapse:collapse;font:.42rem Outfit,sans-serif;color:#8aa0b8}
+  .attr-table th{text-align:left;padding:.18rem .28rem;color:#6a90b0;font-weight:600;
+    border-bottom:1px solid rgba(100,140,180,.25);position:sticky;top:0;background:#0c1424}
+  .attr-table td{padding:.14rem .28rem;border-bottom:1px solid rgba(80,110,140,.12)}
+  .attr-table tr.on td{background:rgba(80,140,200,.12);color:#c8e0f0}
+  .attr-table .sym{font-size:.72rem;color:#b0d0f0;width:1.4rem}
+  .attr-table .nm{color:#90a8c0;font-size:.4rem}
+
+  .win-banner{display:none!important}
+  .field-metrics{font:.40rem Outfit,sans-serif;color:#6a8098;line-height:1.35;
+    background:rgba(20,30,50,.06);border-radius:8px;padding:.18rem .32rem;margin:.12rem 0}
+  .field-metrics b{color:#c45a7a;font-weight:600}
+  .field-metrics .em{color:#3a7a9a;font-size:.36rem}
+  .field-metrics.cascade-hot{background:rgba(255,80,100,.12);color:#a05060;
+    box-shadow:0 0 0 1px rgba(255,100,120,.25) inset}
+  .field-metrics .hot{color:#e04060;font-weight:700}
+  .cascade-log{font:.36rem Outfit,sans-serif;color:#7a90a8;max-height:2.6rem;overflow:hidden;
+    margin-top:.1rem;line-height:1.3;opacity:.9}
+
+</style>
+</head>
+<body>
+  <h1>Éter-maníA. <span style="font-size:.55em;font-weight:500;color:#7a9ab8">laboratorio</span></h1>
+  <div class="layout">
+    <div class="stage">
+      <div class="stage-h"><span id="umbral">ÉTER SUTIL</span><span id="labMode" style="color:#7a9ab8">laboratorio</span></div>
+      <canvas id="field"></canvas>
+    </div>
+    <div class="side">
+      <div class="sheet">
+        <!-- ALMAS -->
+        <div class="sheet-panel almas">
+          <div class="sheet-head">Almas</div>
+          <div class="soul-pick" id="soulPick">
+            <button class="el on" data-k="e" title="Almita">·</button>
+            <button class="el" data-k="p" title="Núcleo">☉</button>
+            <button class="el" data-k="n" title="Eco">◌</button>
+            <button class="el" data-k="γ" title="Luciérnaga">✦</button>
+            <button class="el" data-k="H" title="Náyade">≈</button>
+            <button class="el" data-k="φ" title="Áurea">φ</button>
+            <button class="el" data-k="A" title="Aurion">A</button>
+            <button class="el" data-k="X" title="Umbra">X</button>
+            <button class="el" data-k="Ψ" title="Ondina">Ψ</button>
+          </div>
+          <div id="abilStack">
+            <div class="abil" data-attr="mass">
+              <div class="abil-box"><div class="abil-val" id="avMass">—</div><div class="abil-name">Masa</div></div>
+              <div class="abil-skills" id="skMass"></div>
+            </div>
+            <div class="abil" data-attr="charge">
+              <div class="abil-box"><div class="abil-val" id="avCharge">—</div><div class="abil-name">Carga</div></div>
+              <div class="abil-skills" id="skCharge"></div>
+            </div>
+            <div class="abil" data-attr="affinity">
+              <div class="abil-box"><div class="abil-val" id="avAff" style="font-size:.62rem">—</div><div class="abil-name">Afinidad</div></div>
+              <div class="abil-skills" id="skAff"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ESCENARIOS -->
+        <div class="sheet-panel escenarios">
+          <div class="sheet-head">Escenarios</div>
+          <div class="scene-grid" id="sceneGrid">
+            <button type="button" class="scene-cell hex" data-ex="exPacket">Susurro</button>
+            <button type="button" class="scene-cell" data-ex="exEntangle">Ananké</button>
+            <button type="button" class="scene-cell" data-ex="exOrbit">Selene</button>
+            <button type="button" class="scene-cell hex" data-ex="exLattice">Telar</button>
+            <button type="button" class="scene-cell hex" data-ex="exMolecule">Coro</button>
+            <button type="button" class="scene-cell" data-ex="exFission">Febo</button>
+          </div>
+        </div>
+
+
+        <!-- PARÁMETROS DEL MEDIO -->
+        <div class="sheet-panel">
+          <div class="sheet-head soft">parámetros del medio</div>
+          <div class="medio-body">
+            <div class="sliders">
+              <div>
+                <label>Velo <b id="lbScale">0.20</b></label>
+                <input type="range" id="scale" min="0" max="1" step="0.01" value="0.2">
+              </div>
+              <div>
+                <label>Pulso <b id="lbM">1.00</b></label>
+                <input type="range" id="m" min="0.3" max="2.4" step="0.02" value="1.0">
+              </div>
+              <div>
+                <label>Sutileza <b id="lbHbar">1.00</b></label>
+                <input type="range" id="hbar" min="0.3" max="2.2" step="0.02" value="1.0">
+              </div>
+              <div>
+                <label>Lazo <b id="lbReach">0.26</b></label>
+                <input type="range" id="reach" min="0.1" max="0.4" step="0.01" value="0.26">
+              </div>
+              <div>
+                <label>Fervor <b id="lbKT">0.02</b></label>
+                <input type="range" id="kT" min="0" max="0.12" step="0.002" value="0.02">
+              </div>
+              <div>
+                <label>Espesor <b id="lbGamma">0.40</b></label>
+                <input type="range" id="gamma" min="0" max="2" step="0.02" value="0.40">
+              </div>
+            </div>
+            <div class="medio-actions">
+              <button id="btnLangevin" class="on">Marea ON</button>
+              <button id="btnClear">Disipar</button>
+              <button id="btnPulse">Pulso</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>
+/* Lightweight quantum-particle lab — no heavy 3D grid PDE */
+const HIST=80;
+const historyD=[], historyS=[], historyL=[];
+const particles=[]; // wave-packet particles
+const softLinks=new Map();
+/* Separación entre centros = BOND_SEP_UNITS × (ra+rb)
+   Tamaño ilustrativo ∝ masa (lineal). Unidad: Ondina Ψ = 0.55 → radio base. */
+const BOND_SEP_UNITS=2.5;
+/* Inversión visual de prueba:
+   tamaño en pantalla ∝ 1/masa  (Ondina grande, Aurion chico)
+   presencia (alpha)  ∝ masa    (Ondina plena, Aurion más transparente)
+   Física de lazos: radio de mundo sigue ∝ masa (inercia / separación corporal). */
+const MASS_UNIT=0.55;          // Ondina: masa mínima
+const MASS_MAX=5.4;            // Aurion: masa máxima
+const RAD_PX_UNIT=7.2;         // radio px de referencia (escala media-alta)
+const RAD_WORLD_UNIT=0.014;    // radio mundo a masa = MASS_UNIT (física)
+/* Tamaños relativos conservan el orden, pero los extremos se aproximan:
+   mapeo de (1/m) normalizado → banda [SIZE_LO .. SIZE_HI] (~±25% del centro). */
+const SIZE_LO=0.72;            // Aurion (más masivo → más chico, pero no minúsculo)
+const SIZE_HI=1.22;            // Ondina (más liviana → más grande, sin desbordar)
+const PRES_LO=0.42;            // Aurion: transparente pero legible
+const PRES_HI=0.96;            // Ondina: casi plena
+function massOfKind(kind){
+  return Math.max(0.05, kindMeta[kind]?.mass||1);
+}
+/** t∈[0,1]: 0 = masa máx (Aurion), 1 = masa mín (Ondina) — eje inverso a m */
+function massInvNorm(kind){
+  const inv=MASS_UNIT/massOfKind(kind);
+  const invMin=MASS_UNIT/MASS_MAX;
+  return Math.max(0, Math.min(1, (inv-invMin)/(1-invMin)));
+}
+/** t∈[0,1]: 0 = Ondina, 1 = Aurion — eje directo a m */
+function massNorm(kind){
+  return Math.max(0, Math.min(1, (massOfKind(kind)-MASS_UNIT)/Math.max(1e-6, MASS_MAX-MASS_UNIT)));
+}
+/** Tamaño ilustrativo: orden ∝ 1/m, extremos comprimidos */
+function massSizeScale(kind){
+  const t=massInvNorm(kind); // 1 Ondina … 0 Aurion
+  return SIZE_LO + (SIZE_HI-SIZE_LO)*t;
+}
+/** Presencia ∝ m, extremos suavizados */
+function massPresence(kind){
+  const t=massNorm(kind); // 0 Ondina … 1 Aurion
+  // más masa → menos opacidad, pero dentro de [PRES_LO, PRES_HI]
+  return PRES_HI - (PRES_HI-PRES_LO)*t;
+}
+/** Física: radio de cuerpo sigue creciendo con masa */
+function massPhysScale(kind){
+  return massOfKind(kind)/MASS_UNIT;
+}
+function massBreathFreq(kind){
+  return 0.85 + 1.1*massSizeScale(kind);
+}
+function bodyRadiusWorld(p){
+  return RAD_WORLD_UNIT*massPhysScale(p.kind);
+}
+function sepIdealWorld(a,b){
+  return BOND_SEP_UNITS*(bodyRadiusWorld(a)+bodyRadiusWorld(b));
+}
+/* Refuerza lazos aún no consolidados (no stuck) en la vecindad de p */
+function strengthenNascentLinks(p, amount){
+  if(!p||amount<=0) return;
+  for(const L of softLinks.values()){
+    if(L.stuck) continue;
+    if(L.a!==p.id&&L.b!==p.id) continue;
+    L.target=Math.min(0.55, (L.target||0)+amount);
+    L.alpha=Math.min(0.5, (L.alpha||0)+amount*0.65);
+    L.agency=(L.agency||0)+amount*1.2;
+  }
+}
+
+let nextId=1;
+// lightweight interference residue (2D projection plane for fringes)
+const IW=48, IH=36;
+const interf=new Float32Array(IW*IH);
+let tunnelFlashes=[]; // {x,y,z,life,hue,scale,type}
+let lastTunnelLog=0;
+const trails=new Map(); // id -> [{x,y,z,life,spd}]
+const reactionCooldown=new Map(); // pairKey/id -> last trigger time (evita spam de reacciones)
+const excitedUntil=new Map(); // id -> timestamp hasta el cual el protagonista brilla más
+const fagoDwell=new Map(); // pairKey -> tiempo acumulado de proximidad para fagocitosis
+const stars=Array.from({length:70},()=>({x:Math.random(),y:Math.random(),r:Math.random()*1.3+0.3,ph:Math.random()*Math.PI*2}));
+const MAX_PARTICLES=128;
+const SCALE_MEAN=0.5; // media del umbral: debajo → ensamblaje, encima → dispersión
+
+/* ─── Experimento de escala: hito → capas r → R(r) → r* ───
+   Pi + medio + Phi → R
+   1 hito | 2 relación hito–medio | 3 residual → vuelve a 1' */
+const SCALE_RADII=[0.80,0.60,0.44,0.30,0.20,0.12,0.06];
+let scaleExp={
+  hitoMode:'bary', // 'bary' | 'player' | 'center'
+  hito:{x:0.5,y:0.5,z:0.5},
+  layers:[],
+  rStar:null,
+  rStarR:null,
+  stableFrames:0,
+  histRStar:[], // últimos r* para estabilidad
+  synthAtStar:0,
+};
+function getScaleHito(){
+  if(scaleExp.hitoMode==='center') return {x:0.5,y:0.5,z:0.5};
+  if(scaleExp.hitoMode==='player'){
+    const pl=getPlayer();
+    if(pl) return {x:pl.x,y:pl.y,z:pl.z};
+  }
+  // baricentro de masa (default)
+  if(!particles.length) return {x:0.5,y:0.5,z:0.5};
+  let mx=0,my=0,mz=0,m=0;
+  for(const p of particles){ mx+=p.x*p.mass; my+=p.y*p.mass; mz+=p.z*p.mass; m+=p.mass; }
+  if(m<1e-6) return {x:0.5,y:0.5,z:0.5};
+  return {x:mx/m,y:my/m,z:mz/m};
+}
+function distHito(p,h){
+  return Math.hypot(p.x-h.x,p.y-h.y,p.z-h.z);
+}
+/** Complejidad relacional R dentro de la bola de radio r alrededor del hito.
+ *  Baja cuando hay síntesis: muchas unidades, pocas componentes independientes,
+ *  trayectorias compartidas (poca dispersión de velocidad relativa). */
+function measureR(hito,r){
+  const inside=particles.filter(p=>distHito(p,hito)<=r);
+  const n=inside.length;
+  if(n===0) return {r,n:0,comps:0,mass:0,disp:0,stuckFrac:0,R:0,synth:0};
+  const ids=new Set(inside.map(p=>p.id));
+  // componentes = UF por vínculos stuck / moleculeId
+  const parent=new Map();
+  for(const p of inside) parent.set(p.id,p.id);
+  function find(i){ while(parent.get(i)!==i){ parent.set(i,parent.get(parent.get(i))); i=parent.get(i);} return i; }
+  function uni(a,b){ a=find(a); b=find(b); if(a!==b) parent.set(a,b); }
+  for(const p of inside){
+    if(p.moleculeId){
+      for(const q of inside) if(q.moleculeId===p.moleculeId) uni(p.id,q.id);
+    }
+  }
+  for(const L of softLinks.values()){
+    if(L.alpha<0.2&&!L.stuck) continue;
+    if(!ids.has(L.a)||!ids.has(L.b)) continue;
+    uni(L.a,L.b);
+  }
+  const roots=new Set();
+  for(const p of inside) roots.add(find(p.id));
+  const comps=roots.size;
+  let mass=0, vx=0,vy=0,vz=0;
+  for(const p of inside){ mass+=p.mass; vx+=p.vx; vy+=p.vy; vz+=p.vz; }
+  vx/=n; vy/=n; vz/=n;
+  let disp=0;
+  for(const p of inside) disp+=(p.vx-vx)**2+(p.vy-vy)**2+(p.vz-vz)**2;
+  disp=Math.sqrt(disp/n);
+  const stuckFrac=n>0?1-comps/n:0;
+  // R: costo de descripción — más componentes y más dispersión ⇒ R mayor
+  // síntesis (stuckFrac) comprime R
+  const R=comps*(0.35+disp*8)*(1.15-0.7*stuckFrac);
+  const synth=stuckFrac;
+  return {r,n,comps,mass,disp,stuckFrac,R,synth};
+}
+function updateScaleExperiment(){
+  const h=getScaleHito();
+  scaleExp.hito=h;
+  const layers=SCALE_RADII.map(r=>measureR(h,r));
+  scaleExp.layers=layers;
+  // r* = radio con R mínima entre capas con al menos 2 almas
+  let best=null;
+  for(const L of layers){
+    if(L.n<2) continue;
+    if(!best||L.R<best.R) best=L;
+  }
+  if(best){
+    scaleExp.histRStar.push(best.r);
+    if(scaleExp.histRStar.length>24) scaleExp.histRStar.shift();
+    // estabilidad: moda reciente
+    const freq=new Map();
+    for(const rr of scaleExp.histRStar) freq.set(rr,(freq.get(rr)||0)+1);
+    let mode=best.r, modeN=0;
+    for(const [rr,c] of freq) if(c>modeN){ mode=rr; modeN=c; }
+    if(scaleExp.rStar===mode) scaleExp.stableFrames++;
+    else scaleExp.stableFrames=0;
+    scaleExp.rStar=mode;
+    const atMode=layers.find(L=>L.r===mode);
+    scaleExp.rStarR=atMode?atMode.R:best.R;
+    scaleExp.synthAtStar=atMode?atMode.synth:best.synth;
+  } else {
+    scaleExp.rStar=null;
+    scaleExp.rStarR=null;
+    scaleExp.stableFrames=0;
+  }
+}
+function drawScaleRings(cx,cy,s3){
+  const h=scaleExp.hito;
+  const layers=scaleExp.layers;
+  if(!layers.length) return;
+  // planos esféricos: el aro de influencias rota y pivotea
+  const spin=time*0.55;
+  const tilt=0.55+0.35*Math.sin(time*0.31);
+  const roll=time*0.42;
+  const ux=Math.sin(roll)*Math.cos(tilt);
+  const uy=Math.cos(roll);
+  const uz=Math.sin(roll)*Math.sin(tilt);
+  let bx=1, by=0, bz=0;
+  if(Math.abs(uy)<0.9){ bx=0; by=1; bz=0; }
+  let e1x=uy*bz-uz*by, e1y=uz*bx-ux*bz, e1z=ux*by-uy*bx;
+  let e1n=Math.hypot(e1x,e1y,e1z)+1e-9;
+  e1x/=e1n; e1y/=e1n; e1z/=e1n;
+  const e2x=uy*e1z-uz*e1y, e2y=uz*e1x-ux*e1z, e2z=ux*e1y-uy*e1x;
+
+  for(let li=0;li<layers.length;li++){
+    const L=layers[li];
+    const isStar=scaleExp.rStar!=null&&Math.abs(L.r-scaleExp.rStar)<1e-9;
+    // gamas escaladas de rojos (campo de influencias)
+    const t=li/(Math.max(1,layers.length-1));
+    const red=200+Math.floor(55*(1-t));
+    const g=35+Math.floor(28*t+18*Math.sin(time*0.7+li));
+    const b=50+Math.floor(36*t);
+    const baseA=isStar?0.20:0.035+0.045*(L.synth||0);
+    const steps=56;
+    // desdibujado: varias pasadas suaves
+    for(let pass=0;pass<3;pass++){
+      const jitter=pass*0.007;
+      const a=(baseA*(1-pass*0.3))*(isStar?1.3:1);
+      ctx.beginPath();
+      for(let i=0;i<=steps;i++){
+        const ang=i/steps*Math.PI*2+spin*(isStar?1.15:0.55);
+        const rr=L.r*(1+jitter*Math.sin(ang*3+pass));
+        const px=h.x+(e1x*Math.cos(ang)+e2x*Math.sin(ang))*rr;
+        const py=h.y+(e1y*Math.cos(ang)+e2y*Math.sin(ang))*rr;
+        const pz=h.z+(e1z*Math.cos(ang)+e2z*Math.sin(ang))*rr;
+        const pr=project(px-0.5,py-0.5,pz-0.5,cx,cy,s3);
+        if(i===0) ctx.moveTo(pr.sx,pr.sy); else ctx.lineTo(pr.sx,pr.sy);
+      }
+      ctx.closePath();
+      ctx.strokeStyle=`rgba(${red},${g},${b},${a.toFixed(3)})`;
+      ctx.lineWidth=(isStar?1.35:0.5)+pass*0.4;
+      ctx.stroke();
+    }
+  }
+  // centro del hito: marca mínima (el campo es el aro, no el punto)
+  {
+    const prC=project(h.x-0.5,h.y-0.5,h.z-0.5,cx,cy,s3);
+    const pulse=0.5+0.5*Math.sin(time*1.8);
+    ctx.fillStyle=`rgba(255,75,95,${(0.22+0.12*pulse).toFixed(3)})`;
+    ctx.beginPath(); ctx.arc(prC.sx,prC.sy,2*prC.p,0,Math.PI*2); ctx.fill();
+  }
+}
+let faceWaves=[]; // ondas grises efímeras al atravesar caras del dodecaedro
+let cubeHits=[]; // reacciones animadas al contacto con la caja de rebotes (límites fantasma)
+const dustMotes=[]; // estela de polvo ambiental más intensa
+// estadística de rebotes posteriores a la placa (doble rendija)
+let doubleSlitStats={active:false, rearHits:0, bins:new Array(24).fill(0), lastLog:0};
+
+function spawnFlash(x,y,z,hue,scale=1,type='tunnel'){
+  tunnelFlashes.push({x,y,z,life:1,hue,scale,type});
+}
+function spawnFaceWave(x,y,z){
+  faceWaves.push({x,y,z,life:1});
+}
+function spawnCubeHit(x,y,z,face){
+  cubeHits.push({x,y,z,face,life:1});
+}
+function emitDust(x,y,z,n=3,spd=0.012){
+  const cap=particles.length>90?100:180; // menos motas simultáneas con muchas partículas activas
+  if(dustMotes.length>cap) return;
+  const add=Math.min(n, cap-dustMotes.length);
+  for(let i=0;i<add;i++){
+    dustMotes.push({
+      x,y,z,
+      vx:(Math.random()-0.5)*spd, vy:(Math.random()-0.5)*spd, vz:(Math.random()-0.5)*spd,
+      life:0.7+Math.random()*0.5, r:0.8+Math.random()*1.4
+    });
+  }
+}
+
+/* Construye un muro compartimentado en el plano y-z (grosor en x) con N
+   aperturas rectangulares reales — usado por Túnel (0 aperturas = sólido
+   completo, sin bordes libres) y Doble Rendija (2 aperturas separadas). */
+function buildPartitionedWall(x0,x1, y0,y1, z0,z1, apertures){
+  const boxes=[];
+  const sorted=[...apertures].sort((a,b)=>a.y0-b.y0);
+  let cursorY=y0;
+  for(const ap of sorted){
+    if(ap.y0>cursorY) boxes.push({x0,x1,y0:cursorY,y1:ap.y0,z0,z1});
+    if(ap.z0>z0) boxes.push({x0,x1,y0:ap.y0,y1:ap.y1,z0,z1:ap.z0});
+    if(ap.z1<z1) boxes.push({x0,x1,y0:ap.y0,y1:ap.y1,z0:ap.z1,z1});
+    cursorY=ap.y1;
+  }
+  if(cursorY<y1) boxes.push({x0,x1,y0:cursorY,y1,z0,z1});
+  return boxes;
+}
+
+
+let scale=0.2, mantisa=1, hbar=1, reach=0.26;
+let langevinOn=true, langevinKT=0.02, langevinGamma=0.40; // termostato Langevin (kT, γ)
+/* Histéresis térmica: memoria de camino kT↑ vs kT↓ */
+const thermalHys={
+  kTPrev:0.02,
+  dir:0,           // +1 calentamiento, -1 enfriamiento, 0
+  kTOff:null,      // kT donde cayó el orden al calentar
+  kTOn:null,       // kT donde reapareció orden al enfriar
+  peakKT:0.02,     // máximo kT del ciclo actual
+  wasHot:false,    // estuvo en zona caliente este ciclo
+  orderMem:0,      // orden reciente (stuck/coro proxy)
+  residual:0       // daño térmico residual [0..1] (metaestabilidad)
+};
+function thermalOrderProxy(){
+  let stuck=0, n=0;
+  for(const L of softLinks.values()){ n++; if(L.stuck) stuck++; }
+  let coros=0;
+  const seen=new Set();
+  for(const p of particles){
+    if(p.moleculeId&&!seen.has(p.moleculeId)){ seen.add(p.moleculeId); coros++; }
+  }
+  const pStuck=n?stuck/Math.max(1,n):0;
+  return Math.min(1, 0.55*pStuck + 0.45*Math.min(1,coros/3));
+}
+/* ── Entropía del sistema (nats) ──
+   S_link  : ocupación stuck/libre de lazos
+   S_clus  : distribución de tamaños de coro
+   S_kin   : dispersión de velocidades (proxy)
+   S       : combinación para visualización */
+const entropyState={S:0, S_link:0, S_clus:0, S_kin:0, pStuck:0, hist:[]};
+function computeSystemEntropy(){
+  let nLinks=0, nStuck=0;
+  for(const L of softLinks.values()){
+    nLinks++;
+    if(L.stuck) nStuck++;
+  }
+  // si hay pocos softLinks, estimar P desde pares cercanos
+  let p=nLinks>0?nStuck/nLinks:0;
+  if(nLinks<3 && particles.length>=2){
+    let near=0, nearStuck=0;
+    const r=(typeof reach==='number'?reach:0.28);
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const a=particles[i], b=particles[j];
+        const d=Math.hypot(a.x-b.x,a.y-b.y,a.z-b.z);
+        if(d>r) continue;
+        near++;
+        const L=softLinks.get(linkKey(a.id,b.id));
+        if(L&&L.stuck) nearStuck++;
+      }
+    }
+    if(near>0) p=nearStuck/near;
+  }
+  p=Math.max(1e-6, Math.min(1-1e-6, p));
+  const S_link=-(p*Math.log(p)+(1-p)*Math.log(1-p));
+
+  // distribución de tamaños de coro (+ monómeros como tamaño 1)
+  const groups=new Map();
+  let inCoro=0;
+  for(const q of particles){
+    if(q.moleculeId){
+      groups.set(q.moleculeId,(groups.get(q.moleculeId)||0)+1);
+      inCoro++;
+    }
+  }
+  const counts=[];
+  for(const sz of groups.values()) counts.push(sz);
+  const monomers=Math.max(0, particles.length-inCoro);
+  if(monomers) counts.push(...Array(monomers).fill(1));
+  // histograma de tamaños → entropía de Shannon
+  const freq=new Map();
+  for(const c of counts) freq.set(c,(freq.get(c)||0)+1);
+  const nC=counts.length||1;
+  let S_clus=0;
+  for(const f of freq.values()){
+    const pi=f/nC;
+    if(pi>0) S_clus-=pi*Math.log(pi);
+  }
+  // si todo es monómero o un solo coro, S_clus baja
+
+  // cinética: bins de rapidez
+  let S_kin=0;
+  if(particles.length>0){
+    const speeds=particles.map(e=>Math.hypot(e.vx||0,e.vy||0,e.vz||0));
+    const vmax=Math.max(1e-6, ...speeds);
+    const nb=6;
+    const bins=new Array(nb).fill(0);
+    for(const s of speeds){
+      const i=Math.min(nb-1, Math.floor((s/vmax)*nb));
+      bins[i]++;
+    }
+    const n=speeds.length;
+    for(const b of bins){
+      if(b<=0) continue;
+      const pi=b/n;
+      S_kin-=pi*Math.log(pi);
+    }
+  }
+
+  // total ponderado (escala visual ~0–2.5 nats típicos)
+  const S=0.45*S_link + 0.35*S_clus + 0.20*S_kin;
+  entropyState.S=S;
+  entropyState.S_link=S_link;
+  entropyState.S_clus=S_clus;
+  entropyState.S_kin=S_kin;
+  entropyState.pStuck=p;
+  entropyState.hist.push(S);
+  if(entropyState.hist.length>120) entropyState.hist.shift();
+  return entropyState;
+}
+function drawEntropyOverlay(ctx, W, H){
+  const es=entropyState;
+  if(!es) return;
+  const pad=12;
+  const bw=Math.min(160, W*0.28);
+  const bh=36;
+  const x=pad, y=H-pad-bh-22;
+  ctx.save();
+  ctx.globalAlpha=0.92;
+  // fondo tenue
+  ctx.fillStyle='rgba(8,14,28,0.55)';
+  ctx.strokeStyle='rgba(140,170,210,0.25)';
+  ctx.lineWidth=1;
+  roundRect(ctx,x,y,bw,bh+18,8);
+  ctx.fill(); ctx.stroke();
+  // título
+  ctx.font='600 10px Outfit,sans-serif';
+  ctx.fillStyle='rgba(160,190,220,0.85)';
+  ctx.fillText('entropía S', x+8, y+12);
+  ctx.font='500 9px Outfit,sans-serif';
+  ctx.fillStyle='rgba(120,150,180,0.75)';
+  ctx.fillText('S='+es.S.toFixed(2)+' · link '+es.S_link.toFixed(2)+' · clus '+es.S_clus.toFixed(2), x+8, y+24);
+  // barra S normalizada (max teórico ~ ln2 + ln(n) ~ 1.5–2.2)
+  const sNorm=Math.min(1, es.S/1.8);
+  const barW=(bw-16)*sNorm;
+  const gx=x+8, gy=y+30, gh=6, gw=bw-16;
+  ctx.fillStyle='rgba(40,60,90,0.8)';
+  ctx.fillRect(gx,gy,gw,gh);
+  const grad=ctx.createLinearGradient(gx,0,gx+gw,0);
+  grad.addColorStop(0,'rgba(80,180,220,0.9)');   // orden (baja S relativa en barra corta)
+  grad.addColorStop(0.5,'rgba(200,160,100,0.9)');
+  grad.addColorStop(1,'rgba(240,100,140,0.95)'); // desorden
+  ctx.fillStyle=grad;
+  ctx.fillRect(gx,gy,barW,gh);
+  // sparkline historial
+  const h=es.hist;
+  if(h.length>4){
+    const maxS=Math.max(0.2, ...h);
+    ctx.strokeStyle='rgba(150,200,255,0.45)';
+    ctx.lineWidth=1;
+    ctx.beginPath();
+    for(let i=0;i<h.length;i++){
+      const px=gx+(i/(h.length-1))*gw;
+      const py=gy+gh+4+10*(1-h[i]/maxS);
+      if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+
+function updateThermalHysteresis(){
+  const kT=langevinKT;
+  const dk=kT-thermalHys.kTPrev;
+  if(Math.abs(dk)>0.0008) thermalHys.dir=dk>0?1:-1;
+  thermalHys.peakKT=Math.max(thermalHys.peakKT, kT);
+  const order=thermalOrderProxy();
+  const prev=thermalHys.orderMem;
+  // calentamiento: detectar pérdida de orden (kT_off)
+  if(thermalHys.dir>=0 && prev>0.35 && order<prev-0.12 && order<0.28){
+    if(thermalHys.kTOff==null || kT>thermalHys.kTOff){
+      thermalHys.kTOff=kT;
+      if(typeof log==='function') log('Histéresis · kT_off='+kT.toFixed(3)+' (pérdida de orden)');
+    }
+    thermalHys.wasHot=true;
+  }
+  if(kT>0.055) thermalHys.wasHot=true;
+  // enfriamiento: detectar reaparición (kT_on)
+  if(thermalHys.dir<0 && thermalHys.wasHot && order>0.40 && order>prev+0.08){
+    if(thermalHys.kTOn==null || Math.abs(thermalHys.kTOn-kT)>0.01){
+      thermalHys.kTOn=kT;
+      if(typeof log==='function' && thermalHys.kTOff!=null)
+        log('Histéresis · kT_on='+kT.toFixed(3)+' · kT_off='+thermalHys.kTOff.toFixed(3)+
+            ' · Δ='+(thermalHys.kTOff-kT).toFixed(3));
+    }
+  }
+  // residual: sube con calor, baja lento solo al enfriar en zona fría
+  if(thermalHys.dir>0 || kT>0.05){
+    thermalHys.residual=Math.min(1, thermalHys.residual+0.02*(kT/0.08)+0.01);
+  } else if(kT<0.03 && thermalHys.dir<=0){
+    thermalHys.residual=Math.max(0, thermalHys.residual-0.012);
+  } else {
+    thermalHys.residual=Math.max(0, thermalHys.residual-0.003);
+  }
+  // reset de ciclo si volvemos a frío profundo con orden
+  if(kT<0.025 && order>0.45 && thermalHys.residual<0.08){
+    thermalHys.wasHot=false;
+    thermalHys.peakKT=kT;
+  }
+  thermalHys.orderMem=order*0.25+prev*0.75;
+  thermalHys.kTPrev=kT;
+}
+
+let placeKind='e', pulseM=false, animPhase=0, time=0;
+/* ─── Agar-éter: control de un alma jugadora ─── */
+let playerId=null;
+let agarOn=true;
+let pointerAim=null; // {nx,ny} en coords normalizadas del canvas
+const AGAR_EAT_RATIO=1.18; // hay que ser ~18% más masivo para incorporar
+const AGAR_EAT_RAD=0.055;
+let camFollow={x:0.5,y:0.5,z:0.5};
+function getPlayer(){
+  if(playerId==null) return null;
+  return particles.find(p=>p.id===playerId)||null;
+}
+function ensurePlayer(nx,ny,nz){
+  let p=getPlayer();
+  if(p) return p;
+  p=spawn(nx??0.5, ny??0.5, nz??0.5, placeKind, {
+    vx:0, vy:0, vz:0, mass:(kindMeta[placeKind]?.mass||1)*1.15
+  });
+  p.isPlayer=true;
+  p.decayAt=null; // el jugador no se parte solo
+  playerId=p.id;
+  log('Jugás · '+kindMeta[p.kind].name+' #'+p.id);
+  return p;
+}
+function agarSteer(dt){
+  const p=getPlayer();
+  if(!p||!agarOn||!pointerAim) return;
+  // objetivo en espacio de escena (aprox. plano frontal)
+  const tx=0.22+pointerAim.nx*0.55;
+  const ty=0.22+pointerAim.ny*0.55;
+  const dx=tx-p.x, dy=ty-p.y;
+  const dist=Math.hypot(dx,dy)+1e-6;
+  // más masa → más lento (agar.io)
+  const speed=0.045/(0.7+Math.sqrt(Math.max(0.3,p.mass))*0.35);
+  p.vx+= (dx/dist)*speed*0.35;
+  p.vy+= (dy/dist)*speed*0.35;
+  p.vz*=0.98;
+}
+
+/* ─── Tirón de cuerda: atractor dinámico = resultante de la acción (no se materializa) ─── */
+const TUG_CORE_KINDS=new Set(['p','A']);
+let tugState={active:false, leaderId:null, powers:[], attractor:null};
+/* Métricas de energía del campo de almas (análogo a los experimentos numéricos) */
+let fieldEnergy={
+  E_vivo:0, E_rad:0, frac_core:0, bind:0, H:0,
+  nCore:0, nFree:0, nStuck:0, nNuclei:0
+};
+function computeFieldEnergy(){
+  const n=particles.length;
+  if(!n){
+    fieldEnergy={E_vivo:0,E_rad:0,frac_core:0,bind:0,H:0,nCore:0,nFree:0,nStuck:0,nNuclei:0};
+    return fieldEnergy;
+  }
+  const h=scaleExp.hito||{x:0.5,y:0.5,z:0.5};
+  let massTot=0, massR2=0, massCore=0;
+  let nStuck=0, nNuclei=0;
+  for(const p of particles){
+    const m=p.mass||1;
+    massTot+=m;
+    const dx=p.x-h.x, dy=p.y-h.y, dz=p.z-h.z;
+    const r2=dx*dx+dy*dy+dz*dz;
+    massR2+=m*r2;
+    if(Math.sqrt(r2)<0.30) massCore+=m;
+    if(p.moleculeId||p.crystallized) nStuck++;
+    if(p.kind==='p'||p.kind==='A') nNuclei++;
+  }
+  const E_rad=massR2/Math.max(massTot,1e-9);
+  const frac_core=massCore/Math.max(massTot,1e-9);
+  const nFree=n-nStuck;
+  // E_vivo: adheridas / núcleos (residual de dos poblaciones)
+  const E_vivo=nNuclei>0?(nStuck/nNuclei):(nStuck>0?nStuck:0);
+  // bind: fracción de lazos stuck sobre posibles (aprox)
+  let stuckLinks=0, allLinks=0;
+  for(const L of softLinks.values()){
+    allLinks++;
+    if(L.stuck||L.alpha>0.25) stuckLinks++;
+  }
+  const bind=allLinks>0?stuckLinks/allLinks:(nStuck>0?nStuck/n:0);
+  // H ~ dispersión de velocidades (gradiente cinético) + amplitud de masa
+  let ke=0;
+  for(const p of particles) ke+=0.5*(p.mass||1)*((p.vx||0)**2+(p.vy||0)**2+(p.vz||0)**2);
+  const H=ke*40+E_rad*0.5;
+  fieldEnergy={E_vivo, E_rad, frac_core, bind, H, nCore:0, nFree, nStuck, nNuclei};
+  // nCore particles in ball
+  fieldEnergy.nCore=particles.filter(p=>{
+    const dx=p.x-h.x,dy=p.y-h.y,dz=p.z-h.z;
+    return Math.hypot(dx,dy,dz)<0.30;
+  }).length;
+  return fieldEnergy;
+}
+
+function clusterMass(core){
+  let m=core.mass, allies=0;
+  for(const p of particles){
+    if(p.id===core.id) continue;
+    if(core.moleculeId&&p.moleculeId===core.moleculeId){
+      m+=p.mass*0.65;
+      allies++;
+    } else {
+      const d=Math.hypot(p.x-core.x,p.y-core.y,p.z-core.z);
+      if(d<0.12){
+        const qq=(core.charge||0)*(p.charge||0);
+        if(qq<=0){ m+=p.mass*0.12; allies+=0.25; }
+      }
+    }
+  }
+  return {m, allies};
+}
+function emergentAttractor(ranked){
+  let x=0,y=0,z=0,w=0;
+  for(const r of ranked){
+    const wt=Math.max(0.15, r.power);
+    x+=r.c.x*wt; y+=r.c.y*wt; z+=r.c.z*wt; w+=wt;
+    for(const p of particles){
+      if(p.id===r.c.id) continue;
+      if(r.c.moleculeId&&p.moleculeId===r.c.moleculeId){
+        const aw=p.mass*0.35;
+        x+=p.x*aw; y+=p.y*aw; z+=p.z*aw; w+=aw;
+      }
+    }
+  }
+  if(w<1e-9) return null;
+  let ux=0,uy=0,uz=0;
+  for(const r of ranked){ ux+=r.c.x; uy+=r.c.y; uz+=r.c.z; }
+  const n=ranked.length;
+  ux/=n; uy/=n; uz/=n;
+  const px=x/w, py=y/w, pz=z/w;
+  return {x:px*0.62+ux*0.38, y:py*0.62+uy*0.38, z:pz*0.62+uz*0.38};
+}
+function updateTugOfWar(){
+  const cores=particles.filter(p=>TUG_CORE_KINDS.has(p.kind));
+  tugState.active=cores.length>=2;
+  tugState.powers=[];
+  tugState.attractor=null;
+  if(cores.length<2){ tugState.leaderId=null; return; }
+
+  const assembleBias=scale<SCALE_MEAN?(SCALE_MEAN-scale)/SCALE_MEAN:0;
+  const disperseBias=scale>SCALE_MEAN?(scale-SCALE_MEAN)/(1-SCALE_MEAN):0;
+
+  const ranked=[];
+  for(const c of cores){
+    const {m, allies}=clusterMass(c);
+    const medium=1+assembleBias*0.55-disperseBias*0.45-(langevinOn?langevinKT*4:0);
+    const power=m*Math.max(0.25, medium)*(1+allies*0.08);
+    ranked.push({c, power, m, allies});
+  }
+  ranked.sort((a,b)=>b.power-a.power);
+  tugState.powers=ranked.map(r=>({id:r.c.id, power:r.power, kind:r.c.kind}));
+  tugState.leaderId=ranked[0].c.id;
+
+  const att=emergentAttractor(ranked);
+  tugState.attractor=att;
+  if(!att) return;
+  const ax=att.x, ay=att.y, az=att.z;
+  const totalP=ranked.reduce((s,r)=>s+r.power,0)+1e-6;
+
+  for(const r of ranked){
+    const c=r.c;
+    const dx=ax-c.x, dy=ay-c.y, dz=az-c.z;
+    const dist=Math.hypot(dx,dy,dz)+1e-6;
+    const share=r.power/totalP;
+    // energía: si el campo está extendido (E_rad alto), tirar más al atractor emergente
+    const eBias=1+Math.min(1.2, (fieldEnergy.E_rad||0)*2.2)*(1-(fieldEnergy.frac_core||0));
+    const pull=0.0016*(0.4+share*1.15)*eBias;
+    c.vx+=dx/dist*pull;
+    c.vy+=dy/dist*pull;
+    c.vz+=dz/dist*pull;
+    if(c.id!==tugState.leaderId){
+      const L=ranked[0].c;
+      const sx=c.x-L.x, sy=c.y-L.y, sz=c.z-L.z;
+      const sd=Math.hypot(sx,sy,sz)+1e-6;
+      const push=0.00085*(ranked[0].power/(r.power+0.5));
+      c.vx+=sx/sd*push;
+      c.vy+=sy/sd*push;
+      c.vz+=sz/sd*push;
+    }
+    const base=kindMeta[c.kind].mass;
+    if(assembleBias>0.15&&r.allies>=1){
+      // en vez de crecer de tamaño: reforzar lazos no consolidados del núcleo
+      const gain=Math.min(0.012*assembleBias*(0.5+r.allies*0.15), 0.01);
+      if(gain>0.0005) strengthenNascentLinks(c, gain*2.5);
+    } else if(disperseBias>0.25&&r.allies<0.5){
+      const loss=Math.min(Math.max(0, c.mass-base*0.55), 0.01*disperseBias);
+      if(loss>0.0008){
+        // masa conceptual → residual; tamaño visual no cambia
+        c.mass-=loss;
+        residualMass+=loss;
+        if(c.mass<base*0.85){
+          c.crystallized=false;
+          for(const [k,L] of softLinks){
+            if(L.a===c.id||L.b===c.id){ L.stuck=false; L.target*=0.5; if(typeof notePlay==='function') notePlay('dissolve'); }
+          }
+          if(c.moleculeId){
+            const mid=c.moleculeId;
+            c.moleculeId=null;
+            for(const p of particles) if(p.moleculeId===mid&&p.id!==c.id) p.moleculeId=null;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Adhesión: dos fundamentales se pegan; ninguna desaparece ni cambia de tipo */
+function adhereParticles(a,b,reason='afinidad'){
+  if(!a||!b||a.id===b.id) return false;
+  const k=linkKey(a.id,b.id);
+  if(!softLinks.has(k)) softLinks.set(k,{a:a.id,b:b.id,alpha:0.25,target:0.55,lineage:sameLineage(a,b),stuck:true});
+  const L=softLinks.get(k);
+  L.stuck=true; if(L.stuckSince==null) L.stuckSince=time; L.stuckSince=time;
+  L.target=Math.max(L.target||0,0.58);
+  L.alpha=Math.max(L.alpha||0,0.42);
+  L.lineage=L.lineage||sameLineage(a,b);
+  const mol=a.moleculeId||b.moleculeId||('agg'+(nextId++));
+  a.moleculeId=mol; b.moleculeId=mol;
+  a.crystallized=true; b.crystallized=true;
+  a.crystalStreak=CRYSTAL_TIME; b.crystalStreak=CRYSTAL_TIME;
+  a.memory=(a.memory||0)+0.4; b.memory=(b.memory||0)+0.4;
+  a.relEnergy=(a.relEnergy||0)+0.05; b.relEnergy=(b.relEnergy||0)+0.05;
+  // acortar distancia de inmediato y unificar velocidad (trayectoria compartida)
+  const dx=b.x-a.x, dy=b.y-a.y, dz=b.z-a.z;
+  const d=Math.hypot(dx,dy,dz)+1e-9;
+  const target=sepIdealWorld(a,b); // 2.5 unidades entre enlazadas
+  if(d>target){
+    const t=(d-target)/d*0.45;
+    a.x+=dx*t*0.5; a.y+=dy*t*0.5; a.z+=dz*t*0.5;
+    b.x-=dx*t*0.5; b.y-=dy*t*0.5; b.z-=dz*t*0.5;
+  }
+  const cvx=(a.vx+b.vx)*0.5, cvy=(a.vy+b.vy)*0.5, cvz=(a.vz+b.vz)*0.5;
+  a.vx=cvx*0.85+a.vx*0.15; a.vy=cvy*0.85+a.vy*0.15; a.vz=cvz*0.85+a.vz*0.15;
+  b.vx=cvx*0.85+b.vx*0.15; b.vy=cvy*0.85+b.vy*0.15; b.vz=cvz*0.85+b.vz*0.15;
+  spawnFlash((a.x+b.x)/2,(a.y+b.y)/2,(a.z+b.z)/2,(a.hue+b.hue)/2,1.05,'capture');
+  log('Agencia · '+kindMeta[a.kind].name+' #'+a.id+' ⟂ '+kindMeta[b.kind].name+' #'+b.id+' · '+reason);
+  return true;
+}
+function releaseBond(aId,bId){
+  const k=linkKey(aId,bId);
+  const L=softLinks.get(k);
+  if(!L) return;
+  if(L.stuck&&L.stuckSince!=null) recordStuckLifetime(time-L.stuckSince);
+        L.stuck=false; L.target=0; L.stuckSince=null;
+  const byId=new Map(particles.map(p=>[p.id,p]));
+  const a=byId.get(aId), b=byId.get(bId);
+  if(a){ a.crystalStreak=0; }
+  if(b){ b.crystalStreak=0; }
+}
+function agarEat(){
+  // agar: adhesión al cluster del jugador (no fagocitar/borrar)
+  const p=getPlayer();
+  if(!p||!agarOn) return;
+  const eatR=AGAR_EAT_RAD*(0.85+0.12*Math.sqrt(p.mass));
+  for(const o of particles){
+    if(!o||o.id===p.id) continue;
+    if(p.moleculeId&&o.moleculeId===p.moleculeId) continue; // ya adherida
+    if(p.mass < o.mass*AGAR_EAT_RATIO) continue;
+    const dist=Math.hypot(o.x-p.x,o.y-p.y,o.z-p.z);
+    if(dist>eatR) continue;
+    if(adhereParticles(p,o,'agar')){
+      if(typeof notePlay==='function') notePlay('fago');
+    }
+  }
+}
+function agarSplit(){
+  // Space = soltar una unidad adherida (no dividir la partícula fundamental)
+  const p=getPlayer();
+  if(!p) return;
+  let released=false;
+  for(const [k,L] of softLinks){
+    if(L.a!==p.id&&L.b!==p.id) continue;
+    if(!L.stuck&&L.alpha<0.2) continue;
+    const otherId=L.a===p.id?L.b:L.a;
+    const o=particles.find(x=>x.id===otherId);
+    releaseBond(L.a,L.b);
+    if(o){
+      const ang=pointerAim?Math.atan2(pointerAim.ny-0.5,pointerAim.nx-0.5):Math.random()*Math.PI*2;
+      o.vx+=Math.cos(ang)*0.1; o.vy+=Math.sin(ang)*0.1;
+      o.crystallized=false; o.moleculeId=null;
+      p.vx-=Math.cos(ang)*0.04; p.vy-=Math.sin(ang)*0.04;
+      log('Suelta · #'+p.id+' libera #'+o.id);
+      released=true;
+      break;
+    }
+  }
+  if(!released) log('Suelta · no hay unidades adheridas');
+}
+let rotX=0.4, rotY=-0.65, zoom=1.55;
+let dragging=false, lastPtr=null, moved=false;
+
+/* ==================================================================
+   NÚCLEO CONCEPTUAL: mantissa α_n = φ + Δα_n
+   ESTADO(R_n) → RELACIÓN F(π,φ,R_n,E_n) → RESIDUAL(α_n+1)
+   Acá R_n es el residuo físico real del campo de interferencia
+   (mismo rol que residualMemory en la versión Flutter).
+   ================================================================== */
+const PHI=1.6180339887498949, PHI_FRAC=0.6180339887498949; // φ y frac(φ)
+let mantissaAlpha=Math.random(), mantissaDeltaAlpha=mantissaAlpha-PHI_FRAC;
+const deltaAlphaHistory=[];
+let mantissaStateLabel='—';
+let impulse=0; // E_n: impulso de perturbación del usuario (drag/spawn/escala)
+/* Observador = emisor: cono de influencia (fuga) desde el último acto
+   1 emisor | 2 cono / relaciones | 3 residual */
+const observerEmit={
+  x:0.5, y:0.5, z:0.5,
+  strength:0,      // 0..1 intensidad de la fuga visible
+  life:0,          // decae con el tiempo
+  kind:'hito',     // 'spawn' | 'drag' | 'hito'
+  age:0
+};
+function noteEmission(x,y,z, strength, kind){
+  if(typeof x!=='number'||!Number.isFinite(x)) return;
+  observerEmit.x=x; observerEmit.y=y; observerEmit.z=z??0.5;
+  observerEmit.strength=Math.min(1, Math.max(observerEmit.strength*0.35, strength||0.4));
+  observerEmit.life=1;
+  observerEmit.kind=kind||'spawn';
+  observerEmit.age=0;
+}
+function updateObserverEmit(dt){
+  observerEmit.age+=(dt||0.045);
+  // la fuga decae; el residual queda en impulse del medio
+  observerEmit.life=Math.max(0, observerEmit.life-0.012);
+  observerEmit.strength*=0.985;
+  if(observerEmit.life<=0.02) observerEmit.strength*=0.9;
+  // si no hay emisión reciente, el cono reposa en el hito (perspectiva del punto)
+  if(observerEmit.life<0.15 && typeof getScaleHito==='function'){
+    const h=getScaleHito();
+    const lerp=0.04;
+    observerEmit.x+=(h.x-observerEmit.x)*lerp;
+    observerEmit.y+=(h.y-observerEmit.y)*lerp;
+    observerEmit.z+=(h.z-observerEmit.z)*lerp;
+    if(observerEmit.kind!=='hito' && observerEmit.life<0.05) observerEmit.kind='hito';
+  }
+}
+/** Fuga vs retención (lectura del cono)
+    fuga ≈ J_eff + life del emisor + S relativa
+    retención ≈ bind + stuck + masa en coros */
+function computeFugaRetencion(){
+  const ie=typeof getImpulseEff==='function'?getImpulseEff():impulse;
+  const fuga=Math.min(1,
+    0.40*Math.min(1,ie/0.6)+
+    0.35*observerEmit.strength*observerEmit.life+
+    0.25*Math.min(1,(entropyState?.S||0)/1.6)
+  );
+  let nStuck=0, nCoro=0, mCoro=0, mAll=0;
+  for(const L of softLinks.values()) if(L.stuck) nStuck++;
+  for(const p of particles){
+    mAll+=p.mass||0;
+    if(p.moleculeId){ nCoro++; mCoro+=p.mass||0; }
+  }
+  const bind=softLinks.size?nStuck/Math.max(1,softLinks.size):0;
+  const ret=Math.min(1,
+    0.40*bind+
+    0.35*(mAll>0?mCoro/mAll:0)+
+    0.25*Math.min(1,nStuck/12)
+  );
+  return {fuga, retencion:ret, ratio:fuga/(ret+1e-6)};
+}
+/* Cascada de fisiones (mismo modelo que fission_cascade_model.py) */
+/* Dinámica de fisión (lab): umbral, P de oleada, residual, cooldown renucleación */
+const CASCADE_P=0.10;           // P/frame/mole en zona caliente (menos binaria que 0.14)
+const FISSION_KICK_J=0.16;      // residual de impulse por fisión (realimentación moderada)
+const FISSION_COOLDOWN=2.0;     // s de veda a renucleación tras fisión
+const FISSION_KICK_SPEED=0.07;  // escala base del kick radial
+
+let cascadeState={
+  hot:false, impulseEff:0, nMoles:0,
+  waveFissions:0, waveStartedAt:0, lastFissionAt:0,
+  totalFissions:0, log:[]
+};
+function mareaImpulseAdd(){
+  return langevinOn?Math.min(0.38, langevinKT*7+0.10):0;
+}
+function getImpulseEff(){
+  return impulse+mareaImpulseAdd();
+}
+function countMoles(){
+  return new Set(particles.filter(p=>p.moleculeId).map(p=>p.moleculeId)).size;
+}
+function noteCascadeFission(n){
+  const now=time;
+  if(!cascadeState.hot||now-cascadeState.waveStartedAt>2.5){
+    cascadeState.waveFissions=0;
+    cascadeState.waveStartedAt=now;
+  }
+  cascadeState.waveFissions+=n;
+  cascadeState.totalFissions+=n;
+  cascadeState.lastFissionAt=now;
+  cascadeState.log.unshift('t='+now.toFixed(1)+' · fisión ×'+n+' · moles '+countMoles()+' · J='+impulse.toFixed(2));
+  if(cascadeState.log.length>6) cascadeState.log.length=6;
+}
+/* ── Observables MD avanzados: clusters, lifetimes, constraint stuck ── */
+const labObs={
+  stuckLifetimes:[], // recientes (s)
+  maxLifeSamples:40,
+  lastHist:[]
+};
+function recordStuckLifetime(seconds){
+  if(!(seconds>0)) return;
+  labObs.stuckLifetimes.push(seconds);
+  if(labObs.stuckLifetimes.length>labObs.maxLifeSamples) labObs.stuckLifetimes.shift();
+}
+function meanStuckTau(){
+  const a=labObs.stuckLifetimes;
+  if(!a.length) return null;
+  return a.reduce((s,x)=>s+x,0)/a.length;
+}
+function computeClusterStats(){
+  const groups=new Map();
+  let nStuck=0;
+  for(const L of softLinks.values()){
+    if(L.stuck) nStuck++;
+  }
+  for(const p of particles){
+    if(!p.moleculeId) continue;
+    if(!groups.has(p.moleculeId)) groups.set(p.moleculeId,0);
+    groups.set(p.moleculeId, groups.get(p.moleculeId)+1);
+  }
+  const sizes=[...groups.values()].sort((a,b)=>a-b);
+  const nCoros=sizes.length;
+  const meanN=nCoros?sizes.reduce((s,x)=>s+x,0)/nCoros:0;
+  // histograma bins 1..8+
+  const hist=new Array(8).fill(0);
+  for(const s of sizes){
+    const i=Math.min(7, Math.max(0,s-1));
+    hist[i]++;
+  }
+  labObs.lastHist=hist;
+  return {nCoros, nStuck, meanN, sizes, hist};
+}
+function updateLabMetrics(){
+  const el=document.getElementById('labMetrics');
+  if(!el) return;
+  const st=computeClusterStats();
+  const set=(id,t)=>{const n=document.getElementById(id); if(n) n.textContent=t;};
+  set('lmCoros', String(st.nCoros));
+  set('lmStuck', String(st.nStuck));
+  set('lmMeanN', st.meanN?st.meanN.toFixed(1):'0');
+  const tau=meanStuckTau();
+  set('lmTau', tau!=null?tau.toFixed(2)+'s':'—');
+  set('lmJeff', (typeof getImpulseEff==='function'?getImpulseEff():impulse).toFixed(2));
+  const bars=document.getElementById('lmBars');
+  if(bars){
+    const max=Math.max(1,...st.hist);
+    bars.innerHTML=st.hist.map((c,i)=>{
+      const h=Math.max(2, (c/max)*22);
+      return `<i style="height:${h}px;flex:1;opacity:${c?1:0.25}" title="n=${i+1}${i===7?'+':''}: ${c}"></i>`;
+    }).join('');
+  }
+}
+/* Potencial angular en triples stuck: V = ½ kθ (θ − θ₀)²
+   θ₀ por especie del vértice central → geometría 3D de coros. */
+const ANGLE_K0=0.016; // base angular
+function angleKEffective(){
+  const kT=langevinOn?langevinKT:langevinKT*0.35;
+  // frío → geometría 3D; calor → angular se apaga (no hay tiempo de relajar stuck)
+  return ANGLE_K0*(1-0.65*Math.min(1,kT/0.10))*(1-0.25*(thermalHys.residual||0));
+}
+function theta0ForKind(kind){
+  // tetraédrico ~109.5°, trigonal ~120°, default ~105°
+  if(kind==='p'||kind==='A'||kind==='X') return Math.acos(-1/3);
+  if(kind==='H'||kind==='φ'||kind==='n') return 2*Math.PI/3;
+  if(kind==='e'||kind==='Ψ') return 1.85; // ~106°
+  return 1.91;
+}
+function applyAngularForces(){
+  const byId=new Map(particles.map(p=>[p.id,p]));
+  // vecinos stuck por nodo
+  const nb=new Map();
+  for(const L of softLinks.values()){
+    if(!L.stuck||(L.alpha||0)<0.08) continue;
+    if(!nb.has(L.a)) nb.set(L.a,[]);
+    if(!nb.has(L.b)) nb.set(L.b,[]);
+    nb.get(L.a).push(L.b);
+    nb.get(L.b).push(L.a);
+  }
+  for(const [cid, neigh] of nb){
+    if(neigh.length<2) continue;
+    const c=byId.get(cid);
+    if(!c) continue;
+    const theta0=theta0ForKind(c.kind);
+    const invMc=1/Math.max(0.2,c.mass);
+    // limitar pares angulares para no O(z²) explosivo
+    const z=Math.min(neigh.length, 6);
+    for(let i=0;i<z;i++){
+      for(let j=i+1;j<z;j++){
+        const a=byId.get(neigh[i]), b=byId.get(neigh[j]);
+        if(!a||!b) continue;
+        // vectores desde el centro c hacia a y b
+        let rix=a.x-c.x, riy=a.y-c.y, riz=a.z-c.z;
+        let rjx=b.x-c.x, rjy=b.y-c.y, rjz=b.z-c.z;
+        const ri=Math.hypot(rix,riy,riz)+1e-9;
+        const rj=Math.hypot(rjx,rjy,rjz)+1e-9;
+        rix/=ri; riy/=ri; riz/=ri;
+        rjx/=rj; rjy/=rj; rjz/=rj;
+        let cos=rix*rjx+riy*rjy+riz*rjz;
+        cos=Math.max(-0.999,Math.min(0.999,cos));
+        const theta=Math.acos(cos);
+        const dTheta=theta-theta0;
+        if(Math.abs(dTheta)<0.02) continue;
+        // fuerza tipo GROMACS/angle: derivados respecto a posiciones
+        const sin=Math.sqrt(Math.max(1e-8,1-cos*cos));
+        const k=angleKEffective()*(c.crystallized?1.25:1)*(0.7+0.3*(c.moleculeId?1:0));
+        const forceMag=-k*dTheta; // hacia θ₀
+        // d(theta)/d cos = -1/sin
+        const pref=forceMag/sin;
+        // grad cos w.r.t. unit vectors → fuerzas sobre a, b, c
+        // ∂cos/∂ri_hat = rj_hat, etc.
+        let fax=(pref/ri)*(rjx-cos*rix);
+        let fay=(pref/ri)*(rjy-cos*riy);
+        let faz=(pref/ri)*(rjz-cos*riz);
+        let fbx=(pref/rj)*(rix-cos*rjx);
+        let fby=(pref/rj)*(riy-cos*rjy);
+        let fbz=(pref/rj)*(riz-cos*rjz);
+        // acción-reacción en el centro
+        let fcx=-(fax+fbx), fcy=-(fay+fby), fcz=-(faz+fbz);
+        // clamp
+        const lim=0.012;
+        const clamp3=(x,y,z)=>{
+          const m=Math.hypot(x,y,z);
+          if(m>lim){ const s=lim/m; return [x*s,y*s,z*s]; }
+          return [x,y,z];
+        };
+        [fax,fay,faz]=clamp3(fax,fay,faz);
+        [fbx,fby,fbz]=clamp3(fbx,fby,fbz);
+        [fcx,fcy,fcz]=clamp3(fcx,fcy,fcz);
+        const invMa=1/Math.max(0.2,a.mass);
+        const invMb=1/Math.max(0.2,b.mass);
+        a.ax+=fax*invMa; a.ay+=fay*invMa; a.az+=faz*invMa;
+        b.ax+=fbx*invMb; b.ay+=fby*invMb; b.az+=fbz*invMb;
+        c.ax+=fcx*invMc; c.ay+=fcy*invMc; c.az+=fcz*invMc;
+      }
+    }
+  }
+}
+
+/** Constraint tipo SHAKE suave: stuck a exactamente sepIdeal (2.5 cuerpos) */
+function constrainStuckBonds(){
+  const byId=new Map(particles.map(p=>[p.id,p]));
+  for(let iter=0; iter<2; iter++){
+    for(const L of softLinks.values()){
+      if(!L.stuck||L.alpha<0.08) continue;
+      const a=byId.get(L.a), b=byId.get(L.b);
+      if(!a||!b) continue;
+      const dx=b.x-a.x, dy=b.y-a.y, dz=b.z-a.z;
+      const dist=Math.hypot(dx,dy,dz)+1e-9;
+      const ideal=sepIdealWorld(a,b);
+      const err=dist-ideal;
+      if(Math.abs(err)<0.0008) continue;
+      const corr=err*0.52; // fracción de corrección por iteración
+      const inv=corr/dist;
+      const ma=Math.max(0.2,a.mass), mb=Math.max(0.2,b.mass);
+      const wa=mb/(ma+mb), wb=ma/(ma+mb);
+      a.x+=dx*inv*wa; a.y+=dy*inv*wa; a.z+=dz*inv*wa;
+      b.x-=dx*inv*wb; b.y-=dy*inv*wb; b.z-=dz*inv*wb;
+      // anular componente relativa de velocidad a lo largo del lazo (RATTLE light)
+      const rvx=a.vx-b.vx, rvy=a.vy-b.vy, rvz=a.vz-b.vz;
+      const vn=(rvx*dx+rvy*dy+rvz*dz)/dist;
+      const damp=0.35;
+      a.vx-=(vn*dx/dist)*damp*wa; a.vy-=(vn*dy/dist)*damp*wa; a.vz-=(vn*dz/dist)*damp*wa;
+      b.vx+=(vn*dx/dist)*damp*wb; b.vy+=(vn*dy/dist)*damp*wb; b.vz+=(vn*dz/dist)*damp*wb;
+    }
+  }
+}
+
+function updateCascadeState(){
+  const ie=getImpulseEff();
+  const nm=countMoles();
+  cascadeState.impulseEff=ie;
+  cascadeState.nMoles=nm;
+  cascadeState.hot=ie>FISSION_IMPULSE && nm>0;
+  // cerrar oleada si enfrió
+  if(!cascadeState.hot && cascadeState.waveFissions>0 && time-cascadeState.lastFissionAt>1.2){
+    cascadeState.log.unshift('oleada fin · Σfiss '+cascadeState.waveFissions);
+    if(cascadeState.log.length>6) cascadeState.log.length=6;
+    cascadeState.waveFissions=0;
+  }
+}
+
+/* Experimento: R̂_n+1=F(R_n,π,φ,α_n,E_n)  vs  R_n+1^obs=G(...)  vs  R_n+1^null=R_n */
+const METRICS_WINDOW=150, PRED_EPS_BASE=0.012, PRED_SENS=0.55;
+let rObs=0, predictedNext=0, nullPredicted=0, currentEps=PRED_EPS_BASE;
+const errHistoryF=[], errHistoryNull=[], rObsHistoryForEps=[];
+let precisionF=0, precisionNull=0, mejora=0, maeF=0, maeNull=0, metricsConclusive=false;
+
+/* Observación: precisión/nulo/mejora dependían directamente del Umbral y el
+   Alcance del vínculo porque el epsilon de "acierto" era un número fijo,
+   ajeno a la escala real de R_n bajo esos parámetros. Ahora ε se adapta a la
+   varianza reciente de R_n, así la métrica deja de ser un artefacto de las
+   perillas y mide algo más comparable entre configuraciones. */
+function adaptiveEpsilon(){
+  if(rObsHistoryForEps.length<8) return PRED_EPS_BASE;
+  const mean=rObsHistoryForEps.reduce((a,b)=>a+b,0)/rObsHistoryForEps.length;
+  const variance=rObsHistoryForEps.reduce((a,b)=>a+(b-mean)*(b-mean),0)/rObsHistoryForEps.length;
+  return Math.max(0.006, Math.sqrt(variance)*0.6);
+}
+
+function meanAbsInterf(){
+  let s=0;
+  for(let i=0;i<interf.length;i++) s+=Math.abs(interf[i]);
+  return s/interf.length;
+}
+function classifyMantissa(newDelta, magTrend){
+  // RESONANCIA: Δα converge y permanece cerca de 0 (el sistema se asienta en φ)
+  if(deltaAlphaHistory.length>=24){
+    const recent=deltaAlphaHistory.slice(-24);
+    const allNearPhi=recent.every(v=>Math.abs(v)<0.05);
+    const mean=recent.reduce((a,b)=>a+b,0)/recent.length;
+    const variance=recent.reduce((a,b)=>a+(b-mean)*(b-mean),0)/recent.length;
+    if(allNearPhi && variance<0.0006) return 'RESONANCIA';
+  }
+  // MEMORIA: Δα vuelve a una magnitud/signo que ya tuvo en el historial
+  if(deltaAlphaHistory.length>=40){
+    for(let k=20;k<deltaAlphaHistory.length-5;k++){
+      const past=deltaAlphaHistory[deltaAlphaHistory.length-1-k];
+      if(Math.abs(past-newDelta)<0.01) return 'MEMORIA';
+    }
+  }
+  if(magTrend>0.004) return 'EXPANSIÓN';
+  if(magTrend<-0.004) return 'CONTRACCIÓN';
+  return '—';
+}
+
+// Barriers for tunneling / double-slit (planes in unit cube)
+let barriers=[]; // {x0,x1,y0,y1,z0,z1} boxes that reflect/attenuate
+
+/* Caja contenedora real de los rebotes, visualizada como dodecaedro regular
+   (levemente visible) en vez de un cubo invisible implícito. */
+function buildDodecahedron(scaleR){
+  const P=1.6180339887498949, inv=1/P;
+  const raw=[];
+  for(const sx of [1,-1]) for(const sy of [1,-1]) for(const sz of [1,-1]) raw.push([sx,sy,sz]);
+  for(const sy of [1,-1]) for(const sz of [1,-1]) raw.push([0, sy*inv, sz*P]);
+  for(const sx of [1,-1]) for(const sy of [1,-1]) raw.push([sx*inv, sy*P, 0]);
+  for(const sx of [1,-1]) for(const sz of [1,-1]) raw.push([sx*P, 0, sz*inv]);
+  const circ=Math.sqrt(3);
+  const verts=raw.map(([x,y,z])=>[x/circ*scaleR, y/circ*scaleR, z/circ*scaleR]);
+  let minD=Infinity;
+  for(let i=0;i<verts.length;i++) for(let j=i+1;j<verts.length;j++){
+    const d=Math.hypot(verts[i][0]-verts[j][0],verts[i][1]-verts[j][1],verts[i][2]-verts[j][2]);
+    if(d<minD) minD=d;
+  }
+  const edges=[];
+  for(let i=0;i<verts.length;i++) for(let j=i+1;j<verts.length;j++){
+    const d=Math.hypot(verts[i][0]-verts[j][0],verts[i][1]-verts[j][1],verts[i][2]-verts[j][2]);
+    if(d<minD*1.02) edges.push([i,j]);
+  }
+  return {verts,edges};
+}
+/* Escala ajustada al cubo de la grilla unitaria (~[-0.5,0.5]^3 proyectado):
+   el inradius del dodecaedro regular normalizado ≈ 0.79 del circumradius,
+   aquí usamos 0.48 para que coincida visualmente con los límites 0.02–0.98. */
+/* Espacio de movimiento duplicado: lado 2, centro 0.5 → [-0.5, 1.5]^3 */
+const WORLD_MIN=-0.5, WORLD_MAX=1.5, WORLD_CENTER=0.5, WORLD_SIZE=2;
+const DODECA=buildDodecahedron(0.96);
+
+/* Normales de las 12 caras (direcciones de vértice de un icosaedro dual) +
+   función de rebote real: la caja contenedora deja de ser un cubo invisible
+   y pasa a ser el propio dodecaedro dibujado. */
+function dodecaFaceNormals(){
+  const P=1.6180339887498949;
+  const raw=[];
+  for(const sy of [1,-1]) for(const sz of [1,-1]) raw.push([0,sy,sz*P]);
+  for(const sx of [1,-1]) for(const sy of [1,-1]) raw.push([sx,sy*P,0]);
+  for(const sx of [1,-1]) for(const sz of [1,-1]) raw.push([sx*P,0,sz]);
+  return raw.map(([x,y,z])=>{const l=Math.hypot(x,y,z);return [x/l,y/l,z/l];});
+}
+const DODEC_NORMALS=dodecaFaceNormals();
+const DODEC_INRADIUS=Math.max(...DODECA.verts.map(v=>v[0]*DODEC_NORMALS[0][0]+v[1]*DODEC_NORMALS[0][1]+v[2]*DODEC_NORMALS[0][2]));
+
+function reflectOffDodecahedron(e){
+  const rx=e.x-0.5, ry=e.y-0.5, rz=e.z-0.5;
+  for(const n of DODEC_NORMALS){
+    const dist=rx*n[0]+ry*n[1]+rz*n[2];
+    if(dist>DODEC_INRADIUS){
+      const over=dist-DODEC_INRADIUS;
+      e.x-=n[0]*over; e.y-=n[1]*over; e.z-=n[2]*over;
+      const vn=e.vx*n[0]+e.vy*n[1]+e.vz*n[2];
+      if(vn>0){
+        e.vx-=1.85*vn*n[0]; e.vy-=1.85*vn*n[1]; e.vz-=1.85*vn*n[2];
+        // pequeña onda gris efímera al atravesar/rebotar una cara
+        spawnFaceWave(e.x,e.y,e.z);
+        emitDust(e.x,e.y,e.z,2,0.01);
+      }
+    }
+  }
+  // caja de rebotes (límites fantasma del cubo de la grilla) — se activan al contacto
+  const margin=0.04;
+  let hitFace=null;
+  if(e.x<WORLD_MIN+margin){ e.x=WORLD_MIN+margin; if(e.vx<0){e.vx*=-0.88; hitFace='x-';} }
+  else if(e.x>WORLD_MAX-margin){ e.x=WORLD_MAX-margin; if(e.vx>0){e.vx*=-0.88; hitFace='x+';} }
+  if(e.y<WORLD_MIN+margin){ e.y=WORLD_MIN+margin; if(e.vy<0){e.vy*=-0.88; hitFace='y-';} }
+  else if(e.y>WORLD_MAX-margin){ e.y=WORLD_MAX-margin; if(e.vy>0){e.vy*=-0.88; hitFace='y+';} }
+  if(e.z<WORLD_MIN+margin){ e.z=WORLD_MIN+margin; if(e.vz<0){e.vz*=-0.88; hitFace='z-';} }
+  else if(e.z>WORLD_MAX-margin){ e.z=WORLD_MAX-margin; if(e.vz>0){e.vz*=-0.88; hitFace='z+';} }
+  if(hitFace){
+    spawnCubeHit(e.x,e.y,e.z,hitFace);
+    emitDust(e.x,e.y,e.z,4,0.018);
+    // doble rendija: estadísticas de rebotes en el lado posterior a la placa
+    if(doubleSlitStats.active && e.x>0.55){
+      doubleSlitStats.rearHits++;
+      const bin=Math.max(0,Math.min(23,((e.y-0.08)/0.84*24)|0));
+      doubleSlitStats.bins[bin]++;
+    }
+  }
+}
+
+/* Cristalización molecular: 3+ elementos con vínculos fuertes y sostenidos se
+   funden en una "molécula" reconocible. Fisiona ante otra fuerza: impacto de
+   fotón (γ) o un pico de perturbación ambiental (shock mecánico/térmico). */
+/* Cristalización más accesible: umbral de vínculo más bajo y tiempo más corto
+   para que los clusters formen moléculas (moles) con facilidad bajo umbral media. */
+const CRYSTAL_ALPHA=0.09, CRYSTAL_TIME=0.55, FISSION_IMPULSE=0.50; // umbral J_eff zona caliente
+/* Disolución de lazos (3 fases):
+   1) fatiga — velo/impulso moderados erosionan target del stuck
+   2) ruptura — disperseBias ≥ STUCK_BREAK_BIAS (scale ≳ 0.68) o impulseEff ≥ FISSION_IMPULSE
+   3) decaimiento — alpha cae rápido al soltar; moleculeId solo si no quedan stuck
+   Marea suma al impulse efectivo. */
+const STUCK_BREAK_BIAS=0.36;
+const STUCK_FATIGUE_NEED=1.0;
+const FAGO_RADIUS=0.12, FAGO_COOLDOWN=1.6, FAGO_DWELL=0.32; // fagocitosis jugable (radio, dwell y cooldown)
+
+/* ─── Jerarquía de ensamble: subpartículas → átomo → molécula ───
+   Nivel 1 (síntesis): 2 a 5 subpartículas (e,p,n,γ) con vínculo fuerte
+   sostenido se fusionan en UN átomo (H/A/X/Ψ según cuántas se unieron).
+   Nivel 2 (cristalización, más abajo en updateMolecules): sólo átomos
+   ya sintetizados (H,A,X,Ψ) pueden cristalizar juntos en una molécula —
+   las subpartículas sueltas ya no cristalizan directo, primero deben
+   fusionarse. Ambos niveles obedecen el mismo sesgo de Umbral vs media. */
+const SUBATOMIC_KINDS=new Set(['e','p','n','γ']);
+const ATOM_TIER_KINDS=new Set(['H','A','X','Ψ','φ']);
+const SYNTH_ALPHA=0.075, SYNTH_TIME=0.4, SYNTH_MIN=2, SYNTH_MAX=5;
+/* Producto de fusión según composición (no solo el conteo):
+   la mayoría de dímeros eran n=2 → siempre H; ahora depende de cargas, carga y masa. */
+function lineageOf(p){
+  return p.lineage||p._fromSplit||null;
+}
+function sameLineage(a,b){
+  const la=lineageOf(a), lb=lineageOf(b);
+  if(la&&lb&&la===lb) return true;
+  if(a._fromSplit&&a._fromSplit===b.kind) return true;
+  if(b._fromSplit&&b._fromSplit===a.kind) return true;
+  return false;
+}
+/* Fusión de linajes: si la mayoría de los miembros viene del mismo ancestro
+   (p. ej. fragmentos de Umbra), la conjunción restaura ese ancestro. */
+function fusionKindFromMembers(members){
+  const lineageVotes={};
+  for(const p of members){
+    const L=lineageOf(p);
+    if(L) lineageVotes[L]=(lineageVotes[L]||0)+1;
+  }
+  let best=null, bestN=0;
+  for(const [k,n] of Object.entries(lineageVotes)) if(n>bestN){ best=k; bestN=n; }
+  const n=members.length;
+  if(best&&bestN>=Math.ceil(n*0.5)&&ATOM_TIER_KINDS.has(best)){
+    return {kind:best, lineageRestore:true, root:best};
+  }
+
+  const counts={e:0,p:0,n:0,γ:0};
+  let charge=0, mass=0;
+  for(const p of members){
+    if(counts[p.kind]!=null) counts[p.kind]++;
+    charge+=(p.charge||0);
+    mass+=p.mass;
+  }
+  let kind;
+  if(counts.p>=1&&counts.e>=1&&counts.n===0&&counts.γ===0&&n<=3) kind='H';
+  else if(counts.γ>=2&&counts.e+counts.p+counts.n<=1) kind='φ';
+  else if(counts.n>=1&&counts.p>=1&&n>=3) kind='X';
+  else if(Math.abs(charge)>=2||(counts.p>=2&&n>=3)) kind='A';
+  else if(counts.e>=2&&counts.p===0&&mass<4) kind='Ψ';
+  else if(counts.γ>=1&&counts.e>=1&&counts.p===0) kind='Ψ';
+  else if(counts.n>=2) kind='X';
+  else if(counts.p>=1&&counts.n>=1) kind='A';
+  else if(n>=5) kind=mass>8?'A':'Ψ';
+  else if(n===4) kind=charge>0?'X':(charge<0?'Ψ':'φ');
+  else if(n===3) kind=charge>=1?'A':(charge<=-1?'Ψ':'φ');
+  else if(counts.p&&counts.γ) kind='A';
+  else if(counts.n&&counts.e) kind='X';
+  else if(counts.n&&counts.γ) kind='φ';
+  else if(counts.e&&counts.γ) kind='Ψ';
+  else if(counts.p&&counts.n) kind='A';
+  else {
+    const pool=charge>0?['A','X','H']:charge<0?['Ψ','H','φ']:['φ','H','A','X'];
+    kind=pool[(Math.random()*pool.length)|0];
+  }
+  return {kind, lineageRestore:false, root:best};
+}
+/* Agencia por afinidad: las fundamentales se adhieren en cluster; no fusionan tipos */
+function updateSynthesis(byId){
+  const assembleBias=scale<SCALE_MEAN ? (SCALE_MEAN-scale)/SCALE_MEAN : 0;
+  if(assembleBias<=0) return;
+  for(const L of softLinks.values()){
+    if(L.alpha<SYNTH_ALPHA) continue;
+    const pa=byId.get(L.a), pb=byId.get(L.b);
+    if(!pa||!pb) continue;
+    if(pa.moleculeId&&pa.moleculeId===pb.moleculeId&&L.stuck) continue;
+    // dwell de agencia sobre el vínculo fuerte
+    L.agency=(L.agency||0)+0.04+assembleBias*0.05;
+    if(L.agency>=0.45){
+      adhereParticles(pa,pb,'conjunción');
+      L.agency=0;
+      if(typeof notePlay==='function') notePlay('fusion', pa.kind);
+    }
+  }
+}
+
+const kindMeta={
+  e:{hue:195,mass:1.0, freq:0.08, label:'·', name:'Almita',     spread:0.045, charge:-1, fago:false, affinity:'enlace'},
+  p:{hue:350,mass:3.5, freq:0.035,label:'☉', name:'Núcleo',     spread:0.025, charge:1,  fago:true,  affinity:'ancla'},
+  n:{hue:90, mass:3.6, freq:0.033,label:'◌', name:'Eco',        spread:0.028, charge:0,  fago:false, affinity:'neutro'},
+  γ:{hue:48, mass:0.7, freq:0.12, label:'✦', name:'Luciérnaga', spread:0.06,  charge:0,  fago:false, affinity:'ruptura'},
+  H:{hue:210,mass:2.0, freq:0.05, label:'≈', name:'Náyade',     spread:0.035, charge:0,  fago:true,  affinity:'coro'},
+  φ:{hue:280,mass:2.8, freq:0.04, label:'φ', name:'Áurea',      spread:0.04,  charge:0,  fago:true,  affinity:'coro'},
+  A:{hue:42, mass:5.4, freq:0.018,label:'A', name:'Aurion',     spread:0.026, charge:2,  fago:true,  affinity:'captura'},
+  X:{hue:322,mass:4.3, freq:0.024,label:'X', name:'Umbra',      spread:0.03,  charge:1,  fago:true,  affinity:'denso'},
+  Ψ:{hue:168,mass:0.55,freq:0.11, label:'Ψ', name:'Ondina',     spread:0.09,  charge:-1, fago:false, affinity:'onda'},
+};
+function fillAttrTable(){
+  const m=kindMeta[placeKind]; if(!m) return;
+  const set=(id,t)=>{const el=document.getElementById(id); if(el) el.textContent=t;};
+  set('avMass', String(m.mass));
+  set('avCharge', m.charge>0?'+'+m.charge:String(m.charge));
+  set('avAff', m.affinity);
+  const dots=(onN)=>{
+    let h='';
+    for(let i=0;i<4;i++) h+=`<span><i class="${i<onN?'on':''}"></i></span>`;
+    return h;
+  };
+  // rasgos derivados (formato ficha)
+  const skM=document.getElementById('skMass');
+  const skC=document.getElementById('skCharge');
+  const skA=document.getElementById('skAff');
+  if(skM) skM.innerHTML=
+    `<span><i class="on"></i> ${m.name}</span>`+
+    `<span><i class="${m.mass>=3?'on':''}"></i> inercia</span>`+
+    `<span><i class="${m.mass<1.2?'on':''}"></i> ligereza</span>`+
+    `<span><i class="${m.fago?'on':''}"></i> incorporación</span>`;
+  if(skC) skC.innerHTML=
+    `<span><i class="${m.charge!==0?'on':''}"></i> polaridad</span>`+
+    `<span><i class="${m.charge<0?'on':''}"></i> atracción +</span>`+
+    `<span><i class="${m.charge>0?'on':''}"></i> atracción −</span>`+
+    `<span><i class="${m.charge===0?'on':''}"></i> neutro</span>`;
+  if(skA) skA.innerHTML=
+    `<span><i class="on"></i> ${m.affinity}</span>`+
+    `<span><i class="${m.affinity==='coro'||m.affinity==='enlace'?'on':''}"></i> conjunción</span>`+
+    `<span><i class="${m.affinity==='ruptura'?'on':''}"></i> fisión</span>`+
+    `<span><i class="${m.freq>0.08?'on':''}"></i> agilidad de fase</span>`;
+  document.querySelectorAll('.soul-pick .el').forEach(b=>b.classList.toggle('on', b.dataset.k===placeKind));
+}
+
+
+// pares de fisión/reensamblaje preferidos por tipo (X y elementos fago)
+const FAGO_SPLIT={
+  X:['e','n'], p:['e','γ'], H:['e','p'], φ:['γ','H'], A:['e','p']
+};
+
+const canvas=document.getElementById('field');
+const ctx=canvas.getContext('2d');
+let W=0,H=0;
+
+function resize(){
+  const dpr=Math.min(devicePixelRatio||1,2);
+  const r=canvas.getBoundingClientRect();
+  canvas.width=r.width*dpr; canvas.height=r.height*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0); W=r.width; H=r.height;
+}
+addEventListener('resize',resize);
+
+function hsl(h,s,l,a=1){return `hsla(${h},${s}%,${l}%,${a})`}
+function log(){ /* bitácora removida de la interfaz */ }
+function linkKey(a,b){return a<b?a+'-'+b:b+'-'+a}
+
+let scheduledActions=[]; // {at, fn} — acciones diferidas en tiempo de simulación (ej: fotón retrasado)
+function schedule(delay,fn){ scheduledActions.push({at:time+delay, fn}); }
+
+/* Residual de campo: masa que salió de cuerpos discretos sin destruirse (límite de N, emisiones). */
+let residualMass=0;
+function systemMass(){
+  let m=residualMass;
+  for(const p of particles) m+=p.mass;
+  return m;
+}
+/* Incorporación ontológica: P_A + P_B → P_AB con m_AB = m_A + m_B */
+function incorporate(host, guest){
+  const mIn=guest.mass;
+  host.mass+=mIn;
+  host.charge=(host.charge||0)+(guest.charge||0)*0.5;
+  host.sigma=Math.min(0.14, host.sigma*0.85+guest.sigma*0.35);
+  host.relEnergy=(host.relEnergy||0)+(guest.relEnergy||0)+0.12*mIn;
+  host.memory=(host.memory||0)+1+(guest.memory||0);
+  const hostComp=host.composition||[{kind:host.kind, mass:host.mass-mIn}];
+  const guestComp=guest.composition||[{kind:guest.kind, mass:mIn}];
+  host.composition=hostComp.concat(guestComp).slice(-24); // historia limitada
+  if(guest.lineage&&!host.lineage) host.lineage=guest.lineage;
+  if(guest._fromSplit&&!host._fromSplit) host._fromSplit=guest._fromSplit;
+  // tamaño visual fijo; la incorporación refuerza vínculos nacientes del anfitrión
+  host._radiusScale=1;
+  strengthenNascentLinks(host, 0.04+0.02*mIn);
+}
+
+
+function absorbParticle(guest){
+  const gi=particles.indexOf(guest);
+  if(gi>=0) particles.splice(gi,1);
+  trails.delete(guest.id);
+  for(const k of [...softLinks.keys()])
+    if(k.startsWith(guest.id+'-')||k.endsWith('-'+guest.id)) softLinks.delete(k);
+}
+
+function rehomeOverflow(old){
+  // no borrar materia: fusionar en el vecino más cercano o al residual de campo
+  let best=null, bestD=1e9;
+  for(const p of particles){
+    if(p===old) continue;
+    const d=Math.hypot(p.x-old.x,p.y-old.y,p.z-old.z);
+    if(d<bestD){ bestD=d; best=p; }
+  }
+  if(best){
+    incorporate(best, old);
+    absorbParticle(old);
+    log('Reorganización · masa conservada en #'+best.id);
+  } else {
+    residualMass+=old.mass;
+    absorbParticle(old);
+  }
+}
+
+function spawn(nx,ny,nz,kind=placeKind, extra={}){
+  if(!kindMeta[kind]) kind='e';
+  const m=kindMeta[kind];
+  const baseMass=m.mass*(extra.massScale||1);
+  const mass0=extra.mass!=null?extra.mass:baseMass;
+  const z0=(typeof nz==='number'&&!Number.isNaN(nz))?nz:(0.4+Math.random()*0.2);
+  const p={
+    id:nextId++,
+    x:nx,y:ny,z:z0,
+    vx:extra.vx??(Math.random()-0.5)*0.04,
+    vy:extra.vy??(Math.random()-0.5)*0.04,
+    vz:extra.vz??(Math.random()-0.5)*0.03,
+    mass:mass0,
+    phase:Math.random()*Math.PI*2,
+    freq:m.freq*(0.9+Math.random()*0.2),
+    sigma:m.spread*(0.9+Math.random()*0.2)*hbar,
+    kind, hue:m.hue+(Math.random()-0.5)*12,
+    charge:extra.charge!=null?extra.charge:m.charge,
+    entangledWith:extra.entangledWith??null,
+    amp:1,
+    spawnTime:time,
+    decayAt:null, // fundamentales: no se dividen ni devienen otras
+    crystallized:false, moleculeId:null, crystalStreak:0, fissionCooldownUntil:0, _radiusScale:1,
+    synthStreak:0,
+    vibratePhase:Math.random()*Math.PI*2,
+    ax:0, ay:0, az:0,
+    composition: extra.composition||[{kind, mass: mass0}],
+    relEnergy: extra.relEnergy||0,
+    memory: extra.memory||0,
+    _radiusScale:Math.pow(mass0/Math.max(0.3,m.mass),1/3),
+  };
+  particles.push(p);
+  impulse=Math.min(1,impulse+0.15);
+  noteEmission(nx, ny, z0, 0.55, 'spawn');
+  emitDust(nx,ny,z0,5,0.02);
+  // tope de N: reorganizar sin borrar masa (máx. unas pocas pasadas)
+  let guard=8;
+  while(particles.length>MAX_PARTICLES && guard-- >0){
+    const old=particles[0]===p&&particles.length>1?particles[1]:particles[0];
+    if(!old||old===p&&particles.length===1) break;
+    rehomeOverflow(old);
+  }
+  log('Despierta '+m.name+' #'+p.id);
+  return p;
+}
+
+function clearAll(){
+  cascadeState.waveFissions=0; cascadeState.totalFissions=0; cascadeState.log=[]; cascadeState.hot=false;
+
+  // disipar ≠ destruir: la masa pasa al residual de campo
+  residualMass+=particles.reduce((s,p)=>s+p.mass,0);
+  particles.length=0; softLinks.clear(); barriers=[]; interf.fill(0); tunnelFlashes=[]; trails.clear();
+  faceWaves=[]; cubeHits=[]; dustMotes.length=0; fagoDwell.clear();
+  playerId=null;
+  doubleSlitStats={active:false, rearHits:0, bins:new Array(24).fill(0), lastLog:0};
+  observerEmit.strength=0; observerEmit.life=0; observerEmit.kind='hito';
+  log('El éter se aquieta · residual Σm='+residualMass.toFixed(2));
+}
+
+function inBarrier(x,y,z){
+  for(const b of barriers){
+    if(x>=b.x0&&x<=b.x1&&y>=b.y0&&y<=b.y1&&z>=b.z0&&z<=b.z1) return true;
+  }
+  return false;
+}
+
+function updateSoftLinks(){
+  /* Umbral por debajo de su media → ensamblaje (vínculos más fuertes, alcance efectivo mayor).
+     Por encima → dispersión (vínculos más débiles, alcance menor).
+     El objetivo es que bajo media se formen moles (moléculas) de forma natural. */
+  const assembleBias=scale<SCALE_MEAN ? (SCALE_MEAN-scale)/SCALE_MEAN : 0; // 0..1
+  const disperseBias=scale>SCALE_MEAN ? (scale-SCALE_MEAN)/(1-SCALE_MEAN) : 0;
+  const reachEff=reach*(1+assembleBias*0.85)*(1-disperseBias*0.4);
+  const strengthMul=1+assembleBias*2.0-disperseBias*0.65;
+
+  const desired=new Set();
+  for(let i=0;i<particles.length;i++){
+    for(let j=i+1;j<particles.length;j++){
+      const a=particles[i], b=particles[j];
+      const dist=Math.hypot(a.x-b.x,a.y-b.y,a.z-b.z);
+      if(dist>reachEff) continue;
+      let phaseAlign=0.5+0.5*Math.cos(a.phase-b.phase);
+      if(a.entangledWith===b.id||b.entangledWith===a.id) phaseAlign=Math.max(phaseAlign,0.85);
+      const massAff=1-Math.abs(a.mass-b.mass)/Math.max(a.mass,b.mass,1)*0.3;
+      // opuestos se atraen (enlace); mismo signo casi no forman vínculo (se repelen)
+      const qq=(a.charge||0)*(b.charge||0);
+      const chargeAff=qq<0?1.45:qq>0?0.15:1.0;
+      const molBonus=(a.moleculeId&&a.moleculeId===b.moleculeId)?1.4:1;
+      const lin=sameLineage(a,b);
+      const lineageBonus=lin?1.65:1;
+      // en dispersión (umbral alto) los vínculos se debilitan más
+      const strength=(1-dist/reachEff)*phaseAlign*massAff*chargeAff*molBonus*lineageBonus*strengthMul;
+      // cargas iguales: sin vínculo, salvo linaje compartido o mismo mole
+      if(qq>0 && !molBonus && !lin) continue;
+      /* Termodinámica: umbral de desired sube con kT (ΔF_lazo → 0 ⇒ menos ocupación) */
+      const kTform=langevinOn?langevinKT:langevinKT*0.35;
+      const strengthFloor=0.12+0.10*Math.min(1,kTform/0.10)+0.06*disperseBias
+        +0.05*(thermalHys.residual||0)*(thermalHys.wasHot?1:0.4);
+      if(strength<strengthFloor) continue;
+      const k=linkKey(a.id,b.id);
+      desired.add(k);
+      if(!softLinks.has(k)) softLinks.set(k,{a:a.id,b:b.id,alpha:0,target:0,lineage:!!lin});
+      const L=softLinks.get(k);
+      L.lineage=!!lin;
+      // k_on efectivo: strength × (1 - 0.28 kT/0.1) — estudio termo
+      const tMul=1-0.28*Math.min(1,kTform/0.10);
+      const konBoost=1+assembleBias*0.35;
+      L.target=Math.min(lin?0.48:0.38,(0.04+strength*0.28)*Math.max(0.55,tMul)*konBoost);
+    }
+  }
+  const disperseBias2=scale>SCALE_MEAN ? (scale-SCALE_MEAN)/(1-SCALE_MEAN) : 0;
+  const impulseEff=getImpulseEff();
+
+  function clearCoroIfIsolated(p){
+    if(!p) return;
+    let still=false;
+    for(const L2 of softLinks.values()){
+      if(!L2.stuck) continue;
+      if(L2.a===p.id||L2.b===p.id){ still=true; break; }
+    }
+    if(!still){
+      if(p.moleculeId||p.crystallized){
+        p.crystallized=false; p.moleculeId=null; p.crystalStreak=0;
+      }
+    }
+  }
+
+  for(const [k,L] of softLinks){
+    const inDes=desired.has(k);
+
+    /* Temperatura (fervor kT): k_off ~ kT + kT² + disperse + marea
+       → fatiga de stuck y menor target; coros menos estables al calor. */
+    const kT = langevinOn ? langevinKT : langevinKT * 0.35;
+    const thermalOff = 0.05 + 2.2 * kT + 4.0 * kT * kT;
+    const mareaPush = Math.max(0, (impulseEff - 0.25) * 0.35);
+    // Histéresis: calentar agrava daño; residual mantiene metaestabilidad al enfriar
+    const heatMul = thermalHys.dir>0 ? 1.35 : (thermalHys.dir<0 ? 0.92 : 1);
+    const resMul = 1 + 0.55 * (thermalHys.residual||0);
+
+    // Fatiga incluso en desired: velo dispersivo + calor
+    if(inDes && L.stuck){
+      if(disperseBias2>0.22){
+        L.target=Math.max(0.14, (L.target||0.3)*(1-0.015*disperseBias2));
+        L._fatigue=(L._fatigue||0)+0.012*disperseBias2;
+      }
+      if(kT>0.008){
+        L._fatigue=(L._fatigue||0)+(0.018*(kT/0.04)+0.012*thermalOff)*heatMul*resMul;
+        L.target=Math.max(0.12, (L.target||0.35)*(1-0.01*(kT/0.06)));
+      }
+    }
+
+    if(!inDes){
+      if(L.stuck){
+        const hard=disperseBias2>=STUCK_BREAK_BIAS||impulseEff>=FISSION_IMPULSE;
+        const softZone=disperseBias2>=STUCK_BREAK_BIAS*0.45||impulseEff>=FISSION_IMPULSE*0.55||kT>0.045;
+        // umbral de fatiga baja con temperatura (más fácil romper al calor)
+        const fatigueNeed=STUCK_FATIGUE_NEED*(1-0.45*Math.min(1,kT/0.10))
+          *(thermalHys.dir>0?0.88:1)*(1-0.20*(thermalHys.residual||0));
+        if(hard || (L._fatigue||0)>=fatigueNeed){
+          if(L.stuckSince!=null&&typeof recordStuckLifetime==='function') recordStuckLifetime(time-L.stuckSince);
+          L.stuck=false;
+          L._fatigue=0;
+          L.target=0;
+          L.stuckSince=null;
+          const byId=new Map(particles.map(p=>[p.id,p]));
+          const pa=byId.get(L.a), pb=byId.get(L.b);
+          clearCoroIfIsolated(pa);
+          clearCoroIfIsolated(pb);
+          if(typeof notePlay==='function') notePlay('dissolve');
+        } else if(softZone || kT>0.025){
+          const stress=Math.max(
+            disperseBias2/STUCK_BREAK_BIAS,
+            impulseEff/FISSION_IMPULSE,
+            thermalOff*2.5,
+            mareaPush
+          );
+          L.target=Math.max(0.06, (L.target||0.35)*(1-0.04*stress));
+          L._fatigue=(L._fatigue||0)+0.05*stress+0.03*thermalOff;
+        } else {
+          L.target=Math.max(L.target||0, 0.32);
+          L._fatigue=Math.max(0,(L._fatigue||0)-0.02);
+        }
+      } else {
+        L.target=0;
+        L._fatigue=0;
+      }
+    } else {
+      /* Recuperación asimétrica: al enfriar, residual y wasHot frenan la cura
+         → kT_on < kT_off (lazo de histéresis). */
+      const coolFactor = (thermalHys.wasHot||(thermalHys.residual||0)>0.15)
+        ? (0.35+0.65*Math.max(0,1-(thermalHys.residual||0)))
+        : 1;
+      if(disperseBias2<0.12 && kT<0.03)
+        L._fatigue=Math.max(0,(L._fatigue||0)-0.035*(1-kT/0.045)*coolFactor);
+      else if(disperseBias2<0.18 && kT<0.05)
+        L._fatigue=Math.max(0,(L._fatigue||0)-0.018*coolFactor);
+      else if(kT>=0.05)
+        L._fatigue=Math.max(0,(L._fatigue||0)-0.006*coolFactor);
+    }
+
+    // decaimiento de alpha: más rápido al disolverse
+    const rate=(L.target===0&&!L.stuck)?0.30:(L.stuck?0.16:0.14);
+    L.alpha+=(L.target-L.alpha)*rate;
+    if(L.alpha<0.008&&L.target===0&&!L.stuck) softLinks.delete(k);
+  }
+}
+
+function ensureSet(map,k){ if(!map.has(k)) map.set(k,new Set()); return map.get(k); }
+
+function updateMolecules(byId){
+  const strongNb=new Map();
+  for(const L of softLinks.values()){
+    if(L.alpha<CRYSTAL_ALPHA) continue;
+    // Nivel 2: sólo átomos ya sintetizados cristalizan en molécula (no subpartículas sueltas)
+    const pa=byId.get(L.a), pb=byId.get(L.b);
+    if(!pa||!pb||!ATOM_TIER_KINDS.has(pa.kind)||!ATOM_TIER_KINDS.has(pb.kind)) continue;
+    ensureSet(strongNb,L.a).add(L.b);
+    ensureSet(strongNb,L.b).add(L.a);
+  }
+  /* Bajo umbral media basta un vecino fuerte (dímero) para empezar a cristalizar;
+     por encima se exige cluster de 3 como antes. */
+  const assembleBias=scale<SCALE_MEAN ? (SCALE_MEAN-scale)/SCALE_MEAN : 0;
+    const minNeighbors=assembleBias>0.25 ? 1 : 2;
+  const kTm=langevinOn?langevinKT:langevinKT*0.35;
+  // Rama de enfriamiento: residual sube la barrera de nucleación (histéresis)
+  const hysBarrier=1-0.40*(thermalHys.residual||0)*(thermalHys.dir<0||thermalHys.wasHot?1:0.5);
+  const streakGain=Math.max(0.015, (0.055+assembleBias*0.06-0.15*kTm)*hysBarrier);
+  const streakDecay=0.055+0.12*kTm+0.04*(thermalHys.residual||0);
+
+  for(const e of particles){
+    const nb=strongNb.get(e.id);
+    const inCluster = nb && nb.size>=minNeighbors && time>=(e.fissionCooldownUntil||0);
+    if(inCluster){
+      // renucleación: tras cooldown, bonus leve de streak si el medio sigue vinculante
+      const reBonus=(e.fissionCooldownUntil&&time<e.fissionCooldownUntil+1.2)?assembleBias*0.04:0;
+      e.crystalStreak=(e.crystalStreak||0)+streakGain+reBonus;
+      if(e.crystalStreak>=CRYSTAL_TIME && !e.crystallized){
+        e.crystallized=true;
+        let inherited=null;
+        for(const nid of nb){
+          const other=byId.get(nid);
+          if(other&&other.crystallized&&other.moleculeId){ inherited=other.moleculeId; break; }
+        }
+        e.moleculeId=inherited||('mol'+(nextId++));
+        // arrastra vecinos fuertes al mismo mole
+        for(const nid of nb){
+          const other=byId.get(nid);
+          if(other&&!other.moleculeId){
+            other.moleculeId=e.moleculeId;
+            other.crystallized=true;
+            other.crystalStreak=CRYSTAL_TIME;
+          }
+        }
+        spawnFlash(e.x,e.y,e.z,48,1.25,'crystal');
+        emitDust(e.x,e.y,e.z,4,0.015);
+        if(typeof notePlay==='function') notePlay('chorus');
+      }
+      // cohesión suave hacia el centro del mole (mantiene la molécula junta)
+      if(e.crystallized&&e.moleculeId&&nb){
+        let cx=0,cy=0,cz=0,n=0;
+        for(const nid of nb){
+          const o=byId.get(nid);
+          if(!o) continue;
+          cx+=o.x; cy+=o.y; cz+=o.z; n++;
+        }
+        if(n>0){
+          cx/=n; cy/=n; cz/=n;
+          // cohesión débil: el potencial angular define la forma 3D
+          const pull=0.0045;
+          e.vx+=(cx-e.x)*pull; e.vy+=(cy-e.y)*pull; e.vz+=(cz-e.z)*pull;
+        }
+      }
+    } else {
+      e.crystalStreak=Math.max(0,(e.crystalStreak||0)-streakDecay);
+      if(e.crystalStreak<=0){
+        if(e.crystallized||e.moleculeId){
+          if(typeof notePlay==='function') notePlay('dissolve');
+        }
+        e.crystallized=false; e.moleculeId=null;
+      }
+    }
+  }
+}
+
+/* Fisión: alguna otra fuerza —impacto fotónico o shock ambiental— rompe la
+   molécula cristalizada y dispersa sus miembros. */
+function fissionMolecule(moleculeId, hue=15){
+  const members=particles.filter(p=>p.moleculeId===moleculeId);
+  if(members.length<2) return;
+  const mx=members.reduce((s,p)=>s+p.x,0)/members.length;
+  const my=members.reduce((s,p)=>s+p.y,0)/members.length;
+  const mz=members.reduce((s,p)=>s+p.z,0)/members.length;
+  const cool=FISSION_COOLDOWN;
+  const kSp=FISSION_KICK_SPEED;
+  const dJ=FISSION_KICK_J;
+  for(const p of members){
+    const dx=p.x-mx, dy=p.y-my, dz=p.z-mz;
+    const d=Math.hypot(dx,dy,dz)+0.01;
+    const kick=kSp*(0.75+Math.random()*0.55);
+    p.vx+=(dx/d)*kick; p.vy+=(dy/d)*kick; p.vz+=(dz/d)*kick;
+    p.crystallized=false; p.moleculeId=null; p.crystalStreak=0;
+    p.fissionCooldownUntil=time+cool;
+    excitedUntil.set(p.id,time+0.8);
+    for(const other of members){
+      if(other===p) continue;
+      softLinks.delete(linkKey(p.id,other.id));
+    }
+  }
+  spawnFlash(mx,my,mz,hue,1.9,'fission');
+  impulse=Math.min(1,impulse+dJ);
+  noteCascadeFission(1);
+  if(typeof notePlay==='function') notePlay('fission');
+}
+
+function step(){
+  const dt=0.018;
+  time+=0.045;
+  agarSteer(dt);
+  agarEat();
+  updateTugOfWar();
+  computeFieldEnergy();
+  updateThermalHysteresis();
+  updateCascadeState();
+  computeSystemEntropy();
+  updateObserverEmit(0.045);
+  
+  const pl=getPlayer();
+  if(pl){
+    camFollow.x+=(pl.x-camFollow.x)*0.08;
+    camFollow.y+=(pl.y-camFollow.y)*0.08;
+    camFollow.z+=(pl.z-camFollow.z)*0.08;
+  }
+  if(!dragging) rotY+=0.0007; // deriva cinemática lenta: la escena nunca está del todo quieta
+
+  for(let i=scheduledActions.length-1;i>=0;i--){
+    if(time>=scheduledActions[i].at){ scheduledActions[i].fn(); scheduledActions.splice(i,1); }
+  }
+
+  // --- Predicción F, ANTES de que la física de este frame toque el campo ---
+  const rN=rObs; // R_n: lo último que observamos realmente
+  const eN=Math.min(1,Math.max(0, scale*0.7 + impulse*0.3));
+  impulse*=0.94; // decae lento: la perturbación del jugador sigue contando unos frames
+  const combinedPred=Math.PI*rN + PHI*eN + mantissaAlpha;
+  const hypotheticalAlpha=combinedPred-Math.floor(combinedPred);
+  const anticipatedShift=hypotheticalAlpha-mantissaAlpha;
+  predictedNext=Math.min(1,Math.max(0, rN + anticipatedShift*PRED_SENS));
+  nullPredicted=rN;
+
+  if(pulseM){
+    animPhase+=0.05;
+    mantisa=0.7+1.0*(0.5+0.5*Math.sin(animPhase));
+    document.getElementById('m').value=mantisa;
+    /* valor de pulso: solo el slider */
+  }
+
+  /* ─── Aceleraciones deterministas F/m (Coulomb, LJ, fase, resortes) ─── */
+  function computeAccelerations(){
+    for(const e of particles){ e.ax=0; e.ay=0; e.az=0; }
+    const assembleBias=scale<SCALE_MEAN ? (SCALE_MEAN-scale)/SCALE_MEAN : 0;
+    for(let i=0;i<particles.length;i++){
+      const e=particles[i];
+      const invM=1/Math.max(0.2,e.mass);
+      for(let j=i+1;j<particles.length;j++){
+        const o=particles[j];
+        const dx=o.x-e.x, dy=o.y-e.y, dz=o.z-e.z;
+        const dist=Math.max(Math.hypot(dx,dy,dz),0.018);
+        const invD=1/dist;
+        const invMo=1/Math.max(0.2,o.mass);
+        let fx=0, fy=0, fz=0; // fuerza sobre e (acción-reacción sobre o)
+        const qq=(e.charge||0)*(o.charge||0);
+        const disperseBias=scale>SCALE_MEAN?(scale-SCALE_MEAN)/(1-SCALE_MEAN):0;
+        // Coulomb: mismo signo → repulsión; opuesto → atracción (más fuerte que la fase)
+        if(e.charge&&o.charge&&dist<0.55){
+          const kCoulomb=0.00055*mantisa*(0.7+0.3*hbar);
+          let f=kCoulomb*qq/(dist*dist+0.015);
+          // repulsión un poco más intensa que atracción (evita colapso de nubes e⁻/p⁺)
+          if(qq>0) f*=1.35;
+          f=Math.max(-0.022,Math.min(0.022,f));
+          fx-=dx*invD*f; fy-=dy*invD*f; fz-=dz*invD*f;
+        }
+        // fases: atracción si en fase y umbral bajo; repulsión si fuera de fase o umbral alto
+        if(dist<reach*1.25){
+          const phaseDiff=Math.cos(e.phase-o.phase); // +1 alineadas, -1 opuestas
+          let assembleBoost=1+assembleBias*1.6-disperseBias*1.1;
+          // carga igual: la "atracción de fase" se atenúa mucho (Coulomb manda)
+          if(qq>0) assembleBoost*=0.25;
+          let force=(phaseDiff*0.00055*mantisa*assembleBoost)/(dist*dist+0.02);
+          // en régimen de dispersión, sesgo neto a repeler
+          if(disperseBias>0.2) force-=0.00035*mantisa*disperseBias/(dist*dist+0.03);
+          force=Math.max(-0.01,Math.min(0.008,force));
+          fx+=dx*invD*force; fy+=dy*invD*force; fz+=dz*invD*force;
+        }
+        const Lbond=dist<0.9?softLinks.get(linkKey(e.id,o.id)):null;
+        const stuck=!!(Lbond&&(Lbond.stuck||(Lbond.alpha>0.25&&e.moleculeId&&e.moleculeId===o.moleculeId)));
+        // repulsión de núcleo: suavizada si están adheridas (pueden acercarse)
+        if(dist<0.04&&!stuck){
+          const push=0.004*(0.04-dist)/0.04;
+          fx-=dx*invD*push; fy-=dy*invD*push; fz-=dz*invD*push;
+        } else if(dist<0.012&&stuck){
+          // solo contacto duro mínimo entre unidades del cluster
+          const push=0.002*(0.012-dist)/0.012;
+          fx-=dx*invD*push; fy-=dy*invD*push; fz-=dz*invD*push;
+        }
+        // resorte de vínculo: adheridas → distancia corta + trayectoria compartida
+        {
+          /* Separación de vecindad: BOND_SEP_UNITS (2.5) × (ra+rb) entre centros.
+             Lazos stuck usan el mismo suelo + resorte de vínculo. */
+          const ra=bodyRadiusWorld(e), rb=bodyRadiusWorld(o);
+          const sepIdeal=sepIdealWorld(e,o);
+          const near=dist<Math.max(0.65, sepIdeal*2.0);
+          if(near){
+            const stretch=dist-sepIdeal;
+            if(stretch<0){
+              // repulsión de vecindad (todas las partículas)
+              const kSep=0.055+0.02*assembleBias;
+              const fSep=-kSep*stretch;
+              fx+=dx*invD*fSep; fy+=dy*invD*fSep; fz+=dz*invD*fSep;
+            }
+          }
+          if(dist<0.85&&Lbond&&Lbond.alpha>0.06){
+            const ideal=sepIdeal; // mismo suelo: el lazo se ve entre cuerpos
+            const stretch=dist-ideal;
+            let kSpring=stuck
+              ? (0.085*Lbond.alpha)
+              : (0.012*Lbond.alpha*(e.crystallized&&o.crystallized?1.35:1));
+            kSpring=Math.min(kSpring, stuck?0.14:0.035);
+            const fSpring=-kSpring*stretch;
+            fx+=dx*invD*fSpring; fy+=dy*invD*fSpring; fz+=dz*invD*fSpring;
+            const rvx=e.vx-o.vx, rvy=e.vy-o.vy, rvz=e.vz-o.vz;
+            const damp=stuck?0.05*Lbond.alpha:0.014*Lbond.alpha;
+            fx-=rvx*damp; fy-=rvy*damp; fz-=rvz*damp;
+            if(stuck){
+              const mix=0.10*Lbond.alpha;
+              const cvx=(e.vx+o.vx)*0.5, cvy=(e.vy+o.vy)*0.5, cvz=(e.vz+o.vz)*0.5;
+              e.vx+=(cvx-e.vx)*mix; e.vy+=(cvy-e.vy)*mix; e.vz+=(cvz-e.vz)*mix;
+              o.vx+=(cvx-o.vx)*mix; o.vy+=(cvy-o.vy)*mix; o.vz+=(cvz-o.vz)*mix;
+            } else if(stretch<0.02){
+              // cercanía sin stuck → fortalecer vínculo naciente (en vez de crecer tamaño)
+              Lbond.target=Math.min(0.52, (Lbond.target||0)+0.008*assembleBias);
+              Lbond.agency=(Lbond.agency||0)+0.02*assembleBias;
+            }
+          }
+        }
+        // LJ suave residual (atracción a media distancia); el suelo duro es sepIdeal
+        if(dist<0.35&&dist>sepIdealWorld(e,o)*0.88){
+          const sigmaVdW=0.055+0.004*(Math.sqrt(e.mass)+Math.sqrt(o.mass))*0.1;
+          const epsVdW=0.00018*mantisa*(1+0.25*assembleBias);
+          const invR=1/Math.max(dist,0.03);
+          const sr=Math.min(sigmaVdW*invR,1.8);
+          const sr2=sr*sr, sr6=sr2*sr2*sr2, sr12=sr6*sr6;
+          let fMag=24*epsVdW*invR*(2*sr12-sr6);
+          if(qq>0) fMag=Math.max(fMag,0)*1.1+Math.min(fMag,0)*0.15;
+          fMag=Math.max(-0.008,Math.min(0.01,fMag));
+          fx-=dx*invR*fMag; fy-=dy*invR*fMag; fz-=dz*invR*fMag;
+        }
+        e.ax+=fx*invM; e.ay+=fy*invM; e.az+=fz*invM;
+        o.ax-=fx*invMo; o.ay-=fy*invMo; o.az-=fz*invMo;
+      }
+      // Aurion: atracción orbital hacia e⁻
+      if(e.kind==='A'){
+        for(const o of particles){
+          if(o===e||o.kind!=='e') continue;
+          const dx=e.x-o.x, dy=e.y-o.y, dz=e.z-o.z;
+          const dist=Math.hypot(dx,dy,dz);
+          if(dist<0.075&&dist>1e-6){
+            const f=0.0018*mantisa;
+            o.ax+=dx*f; o.ay+=dy*f; o.az+=dz*f;
+          }
+        }
+      }
+    }
+    // potencial angular (triples stuck) → geometría 3D de coros
+    applyAngularForces();
+  }
+
+  function randn(){
+    let u=0,v=0;
+    while(u===0) u=Math.random();
+    while(v===0) v=Math.random();
+    return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+  }
+
+  function clampVel(e){
+    const vmax=0.35;
+    const sp=Math.hypot(e.vx,e.vy,e.vz);
+    if(sp>vmax){ const s=vmax/sp; e.vx*=s; e.vy*=s; e.vz*=s; }
+    if(!Number.isFinite(e.vx)) e.vx=0;
+    if(!Number.isFinite(e.vy)) e.vy=0;
+    if(!Number.isFinite(e.vz)) e.vz=0;
+    if(!Number.isFinite(e.x)||!Number.isFinite(e.y)||!Number.isFinite(e.z)){
+      e.x=0.5; e.y=0.5; e.z=0.5; e.vx=0; e.vy=0; e.vz=0; e.ax=0; e.ay=0; e.az=0;
+    }
+  }
+
+  /* ─── Velocity Verlet + Langevin BAOAB ───
+     B: v += (dt/2) a(x)
+     A: x += (dt/2) v
+     O: Ornstein–Uhlenbeck exacto  v ← c1 v + c2 √(kT/m) ξ
+     A: x += (dt/2) v
+     B: v += (dt/2) a(x')
+     γ=0 y kT=0 → Verlet puro (NVE). Con γ>0 muestreás el canónico (NVT). */
+  computeAccelerations();
+
+  // B + A (media)
+  for(const e of particles){
+    e.phase+=e.freq*hbar*mantisa;
+    e.sigma+=0.00015*hbar*hbar/Math.max(0.3,e.mass);
+    e.vx+=0.5*dt*e.ax; e.vy+=0.5*dt*e.ay; e.vz+=0.5*dt*e.az;
+    e.x+=0.5*dt*e.vx; e.y+=0.5*dt*e.vy; e.z+=0.5*dt*e.vz;
+  }
+
+  // O — termostato Langevin (fricción + ruido térmico)
+  if(langevinOn && langevinGamma>1e-6){
+    const g=langevinGamma;
+    const c1=Math.exp(-g*dt);
+    for(const e of particles){
+      const c2=Math.sqrt(Math.max(0, langevinKT/Math.max(0.2,e.mass)*(1-c1*c1)));
+      e.vx=c1*e.vx+c2*randn();
+      e.vy=c1*e.vy+c2*randn();
+      e.vz=c1*e.vz+c2*randn();
+    }
+  }
+
+  // A (segunda media) + barreras / túnel
+  for(const e of particles){
+    let nx=e.x+0.5*dt*e.vx, ny=e.y+0.5*dt*e.vy, nz=e.z+0.5*dt*e.vz;
+    if(inBarrier(nx,ny,nz)){
+      const tunnelP=Math.exp(-2.5*e.mass/hbar)*0.15*mantisa;
+      if(Math.random()>tunnelP){
+        if(inBarrier(nx,e.y,e.z)) e.vx*=-0.85;
+        if(inBarrier(e.x,ny,e.z)) e.vy*=-0.85;
+        if(inBarrier(e.x,e.y,nz)) e.vz*=-0.85;
+        nx=e.x+0.5*dt*e.vx; ny=e.y+0.5*dt*e.vy; nz=e.z+0.5*dt*e.vz;
+      }
+    }
+    const wasBlocked=inBarrier(e.x+Math.sign(e.vx||0.01)*0.04,e.y,e.z);
+    e.x=nx; e.y=ny; e.z=nz;
+    if(wasBlocked && !inBarrier(e.x,e.y,e.z) && e.vx>0.01){
+      spawnFlash(e.x,e.y,e.z,160,1,'tunnel');
+      excitedUntil.set(e.id,time+0.6);
+      if(time-lastTunnelLog>0.8){ log('Cruza el Velo · '+kindMeta[e.kind].name+' #'+e.id); lastTunnelLog=time; }
+    }
+    reflectOffDodecahedron(e);
+  }
+
+  // colisiones elásticas (impulsos instantáneos sobre v)
+  for(const p of particles) p._cbrt=Math.cbrt(Math.max(0.2,p.mass)); // evita recalcular cbrt por cada par
+  for(let i=0;i<particles.length;i++){
+    const e=particles[i];
+    for(let j=i+1;j<particles.length;j++){
+      const o=particles[j];
+      const dx=o.x-e.x, dy=o.y-e.y, dz=o.z-e.z;
+      const dist=Math.hypot(dx,dy,dz)+1e-9;
+      const rColl=0.022+0.006*(e._cbrt+o._cbrt);
+      if(dist>=rColl) continue;
+      const nx=dx/dist, ny=dy/dist, nz=dz/dist;
+      const vn=(e.vx-o.vx)*nx+(e.vy-o.vy)*ny+(e.vz-o.vz)*nz;
+      if(vn>=0) continue;
+      const m1=Math.max(0.2,e.mass), m2=Math.max(0.2,o.mass);
+      let jImp=-(1+0.9)*vn/(1/m1+1/m2);
+      jImp=Math.max(-0.08,Math.min(0.08,jImp));
+      e.vx+=(jImp/m1)*nx; e.vy+=(jImp/m1)*ny; e.vz+=(jImp/m1)*nz;
+      o.vx-=(jImp/m2)*nx; o.vy-=(jImp/m2)*ny; o.vz-=(jImp/m2)*nz;
+      const push=Math.min((rColl-dist)*0.5,0.02);
+      e.x-=nx*push*(m2/(m1+m2)); e.y-=ny*push*(m2/(m1+m2)); e.z-=nz*push*(m2/(m1+m2));
+      o.x+=nx*push*(m1/(m1+m2)); o.y+=ny*push*(m1/(m1+m2)); o.z+=nz*push*(m1/(m1+m2));
+      if(Math.random()<0.12){
+        spawnFlash((e.x+o.x)/2,(e.y+o.y)/2,(e.z+o.z)/2,200,0.45,'collision');
+        emitDust((e.x+o.x)/2,(e.y+o.y)/2,(e.z+o.z)/2,1,0.01);
+      }
+    }
+  }
+
+  // B final — recompute a(x') y completar media-kick
+  computeAccelerations();
+  const byIdReact=new Map();
+  for(const p of particles) byIdReact.set(p.id,p);
+  for(const e of particles){
+    e.vx+=0.5*dt*e.ax; e.vy+=0.5*dt*e.ay; e.vz+=0.5*dt*e.az;
+    clampVel(e);
+  }
+  // SHAKE/RATTLE light: stuck a distancia ideal 2.5
+  constrainStuckBonds();
+  for(const e of particles){
+    // correlaciones / reacciones (no integradas)
+    if(e.entangledWith!=null){
+      const partner=byIdReact.get(e.entangledWith);
+      if(partner) e.phase+=(partner.phase-e.phase)*0.02;
+    }
+    if(e.kind==='A'){
+      for(const o of particles){
+        if(o===e||o.kind!=='e') continue;
+        const dist=Math.hypot(o.x-e.x,o.y-e.y,o.z-e.z);
+        if(dist<0.075){
+          const key='cap:'+linkKey(e.id,o.id);
+          if(time-(reactionCooldown.get(key)||-99)>1.4){
+            reactionCooldown.set(key,time);
+            excitedUntil.set(e.id,time+0.7); excitedUntil.set(o.id,time+0.7);
+            spawnFlash(e.x,e.y,e.z,42,1.25,'capture');
+            log('Aurion #'+e.id+' atrae Almita #'+o.id);
+            if(typeof notePlay==='function') notePlay('capture');
+          }
+        }
+      }
+    }
+    if(e.kind==='Ψ'){
+      for(const o of particles){
+        if(o===e||(o.kind!=='Ψ'&&o.kind!=='e')) continue;
+        const dist=Math.hypot(o.x-e.x,o.y-e.y,o.z-e.z);
+        if(dist<0.05){
+          const key='col:'+linkKey(e.id,o.id);
+          if(time-(reactionCooldown.get(key)||-99)>1.4){
+            reactionCooldown.set(key,time);
+            excitedUntil.set(e.id,time+0.7); excitedUntil.set(o.id,time+0.7);
+            e.sigma=Math.max(0.012,e.sigma*0.22);
+            spawnFlash((e.x+o.x)/2,(e.y+o.y)/2,(e.z+o.z)/2,168,1.35,'collapse');
+            log('Ondina #'+e.id+' se pliega en el éter');
+            if(typeof notePlay==='function') notePlay('collapse');
+          }
+        }
+      }
+    }
+    if(e.kind==='γ'){
+      for(const o of particles){
+        if(o===e||!o.crystallized||!o.moleculeId) continue;
+        const dist=Math.hypot(o.x-e.x,o.y-e.y,o.z-e.z);
+        if(dist<0.10){ fissionMolecule(o.moleculeId,15); break; }
+      }
+    }
+
+    const spd=Math.hypot(e.vx,e.vy,e.vz);
+    if(!trails.has(e.id)) trails.set(e.id,[]);
+    const tr=trails.get(e.id);
+    tr.push({x:e.x,y:e.y,z:e.z,life:1,spd});
+    // cap de estela adaptativo: con muchas partículas activas, menos historial por una (rendimiento)
+    const trailCap=particles.length>90?14:particles.length>50?22:36;
+    if(tr.length>trailCap) tr.shift();
+    for(let t=0;t<tr.length;t++) tr[t].life-=0.032;
+    while(tr.length&&tr[0].life<=0) tr.shift();
+    if(spd>0.008 && Math.random()<(particles.length>90?0.16:0.35)) emitDust(e.x,e.y,e.z,1,0.008);
+
+    const ix=Math.max(0,Math.min(IW-1,(e.x*IW)|0));
+    const iy=Math.max(0,Math.min(IH-1,(e.y*IH)|0));
+    interf[iy*IW+ix]+=Math.cos(e.phase)*Math.exp(-e.sigma*8)*0.35*mantisa;
+  }
+
+  // --- Agencia / adhesión (fundamentales: no se dividen ni cambian de tipo) ---
+  {
+    const fagoOpen=scale<SCALE_MEAN+0.08;
+    const activeKeys=new Set();
+    if(fagoOpen){
+      const snapshot=[...particles];
+      for(const e of snapshot){
+        if(!particles.includes(e)) continue;
+        // cualquier tipo puede agenciarse; los "fago" solo inician más fácil el dwell
+        const initiator=kindMeta[e.kind]?.fago?1.25:1;
+        e.vibratePhase=(e.vibratePhase||0)+0.06*initiator;
+        for(const o of snapshot){
+          if(o===e||!particles.includes(o)) continue;
+          if(e.moleculeId&&o.moleculeId===e.moleculeId) continue;
+          const lin=sameLineage(e,o);
+          const cq=(o.charge||0)*(e.charge||0);
+          const chargeOk=cq<=0||lin;
+          if(!chargeOk&&!lin) continue;
+          const dist=Math.hypot(o.x-e.x,o.y-e.y,o.z-e.z);
+          if(dist>FAGO_RADIUS) continue;
+          const key='fago:'+linkKey(e.id,o.id);
+          activeKeys.add(key);
+          const dwellGain=0.045*initiator*(lin?1.4:1)*(0.75+(SCALE_MEAN-Math.min(scale,SCALE_MEAN))/SCALE_MEAN*0.5);
+          fagoDwell.set(key,(fagoDwell.get(key)||0)+dwellGain);
+          if(dist>0.02){
+            const pull=0.0018*(1-dist/FAGO_RADIUS);
+            e.vx+=(o.x-e.x)*pull*0.5; e.vy+=(o.y-e.y)*pull*0.5; e.vz+=(o.z-e.z)*pull*0.5;
+            o.vx+=(e.x-o.x)*pull*0.5; o.vy+=(e.y-o.y)*pull*0.5; o.vz+=(e.z-o.z)*pull*0.5;
+          }
+          if((fagoDwell.get(key)||0)<FAGO_DWELL) continue;
+          if(time-(reactionCooldown.get(key)||-99)<FAGO_COOLDOWN) continue;
+          reactionCooldown.set(key,time);
+          fagoDwell.delete(key);
+          adhereParticles(e,o,'fagocitación-adhesiva');
+          if(typeof notePlay==='function') notePlay('fago');
+          break;
+        }
+      }
+    }
+    for(const k of [...fagoDwell.keys()]){
+      if(!activeKeys.has(k)) fagoDwell.set(k,Math.max(0,(fagoDwell.get(k)||0)-0.1));
+      if((fagoDwell.get(k)||0)<=0) fagoDwell.delete(k);
+    }
+  }
+
+  // decay interference residue
+  for(let i=0;i<interf.length;i++) interf[i]*=0.965;
+  // decay flashes
+  for(let i=tunnelFlashes.length-1;i>=0;i--){
+    tunnelFlashes[i].life-=0.03;
+    if(tunnelFlashes[i].life<=0) tunnelFlashes.splice(i,1);
+  }
+  for(let i=faceWaves.length-1;i>=0;i--){
+    faceWaves[i].life-=0.04;
+    if(faceWaves[i].life<=0) faceWaves.splice(i,1);
+  }
+  for(let i=cubeHits.length-1;i>=0;i--){
+    cubeHits[i].life-=0.035;
+    if(cubeHits[i].life<=0) cubeHits.splice(i,1);
+  }
+  for(let i=dustMotes.length-1;i>=0;i--){
+    const d=dustMotes[i];
+    d.x+=d.vx; d.y+=d.vy; d.z+=d.vz;
+    d.vx*=0.97; d.vy*=0.97; d.vz*=0.97;
+    d.life-=0.018;
+    if(d.life<=0) dustMotes.splice(i,1);
+  }
+  // log periódico de estadísticas de doble rendija
+  if(doubleSlitStats.active && time-doubleSlitStats.lastLog>2.5 && doubleSlitStats.rearHits>0){
+    doubleSlitStats.lastLog=time;
+    const peak=Math.max(...doubleSlitStats.bins);
+    const peaks=doubleSlitStats.bins.filter(v=>v>peak*0.55).length;
+    log('Dos Umbrales · ecos tras el velo: '+doubleSlitStats.rearHits+' · picos≈'+peaks);
+  }
+
+  updateSoftLinks();
+  {
+    const byId1=new Map();
+    for(const p of particles) byId1.set(p.id,p);
+    updateSynthesis(byId1); // nivel 1: subpartículas → átomo
+  }
+  {
+    const byId2=new Map(); // reconstruido: la síntesis puede haber mutado particles
+    for(const p of particles) byId2.set(p.id,p);
+    updateMolecules(byId2); // nivel 2: átomos → molécula
+  }
+  // fisión por shock ambiental: un pico fuerte de perturbación (no solo el fotón) también rompe cristales
+  {
+    /* Cascada ambiental = modelo Monte Carlo: P por mole si impulseEff > umbral */
+    const impulseEff=getImpulseEff();
+    if(impulseEff>FISSION_IMPULSE){
+      const molIds=[...new Set(particles.filter(p=>p.crystallized&&p.moleculeId).map(p=>p.moleculeId))];
+      for(const mid of molIds){
+        if(Math.random()<CASCADE_P) fissionMolecule(mid,8);
+      }
+    }
+  }
+
+  // --- R_n+1^obs = G(...): lo que la física realmente produjo este frame ---
+  const rObsNext=Math.min(1, meanAbsInterf()*6);
+  const errF=Math.abs(rObsNext-predictedNext);
+  const errN=Math.abs(rObsNext-nullPredicted);
+  errHistoryF.push(errF); errHistoryNull.push(errN);
+  if(errHistoryF.length>METRICS_WINDOW){errHistoryF.shift(); errHistoryNull.shift();}
+  rObsHistoryForEps.push(rObsNext);
+  if(rObsHistoryForEps.length>60) rObsHistoryForEps.shift();
+  currentEps=adaptiveEpsilon();
+  const hitsF=errHistoryF.filter(e=>e<currentEps).length;
+  const hitsN=errHistoryNull.filter(e=>e<currentEps).length;
+  precisionF=errHistoryF.length?(hitsF/errHistoryF.length)*100:0;
+  precisionNull=errHistoryNull.length?(hitsN/errHistoryNull.length)*100:0;
+  mejora=precisionF-precisionNull;
+  maeF=errHistoryF.length?errHistoryF.reduce((a,b)=>a+b,0)/errHistoryF.length:0;
+  maeNull=errHistoryNull.length?errHistoryNull.reduce((a,b)=>a+b,0)/errHistoryNull.length:0;
+  metricsConclusive=errHistoryF.length>=80;
+  rObs=rObsNext;
+
+  // --- Actualizar mantissa α_n = φ + Δα_n a partir del estado observado ---
+  const combined=Math.PI*rObsNext + PHI*eN + mantissaAlpha;
+  const newAlpha=combined-Math.floor(combined);
+  const newDelta=newAlpha-PHI_FRAC;
+  const magPrev=Math.abs(mantissaDeltaAlpha), magNew=Math.abs(newDelta);
+  deltaAlphaHistory.push(newDelta);
+  if(deltaAlphaHistory.length>180) deltaAlphaHistory.shift();
+  mantissaStateLabel=classifyMantissa(newDelta, magNew-magPrev);
+  mantissaAlpha=newAlpha;
+  mantissaDeltaAlpha=newDelta;
+
+  // metrics
+  let meanSig=0;
+  for(const p of particles) meanSig+=p.sigma;
+  meanSig=particles.length?meanSig/particles.length:0;
+  historyD.push(particles.length);
+  historyS.push(meanSig);
+  historyL.push(softLinks.size);
+  if(historyD.length>HIST){historyD.shift();historyS.shift();historyL.shift()}
+  updateScaleExperiment();
+}
+
+function project(nx,ny,nz,cx,cy,s3){
+  let x1=nx*Math.cos(rotY)-nz*Math.sin(rotY);
+  let z1=nx*Math.sin(rotY)+nz*Math.cos(rotY);
+  let y2=ny*Math.cos(rotX)-z1*Math.sin(rotX);
+  let z2=ny*Math.sin(rotX)+z1*Math.cos(rotX);
+  const persp=1/(1.55-z2*0.55);
+  return {sx:cx+x1*s3*persp, sy:cy+y2*s3*persp, z:z2, p:persp};
+}
+/** Pantalla → mundo: plano medio del volumen (coincide con lo que se ve al clicar). */
+function screenToWorld(clientX, clientY){
+  const r=canvas.getBoundingClientRect();
+  const sx=clientX-r.left, sy=clientY-r.top;
+  const cx=W/2, cy=H/2;
+  const s3=Math.min(W,H)*0.28*(1+Math.sin(time*0.1)*0.04)*zoom;
+  const persp=1/1.55; // plano z2≈0
+  const x1=(sx-cx)/(s3*persp);
+  const y2=(sy-cy)/(s3*persp);
+  const cosX=Math.cos(rotX), sinX=Math.sin(rotX);
+  const cosY=Math.cos(rotY), sinY=Math.sin(rotY);
+  const ny=y2*cosX;
+  const z1=-y2*sinX;
+  const nx=x1*cosY+z1*sinY;
+  const nz=-x1*sinY+z1*cosY;
+  const clamp=v=>Math.max(WORLD_MIN+0.04,Math.min(WORLD_MAX-0.04,v));
+  return {x:clamp(nx+0.5), y:clamp(ny+0.5), z:clamp(nz+0.5)};
+}
+
+
+function drawObserverCone(cx,cy,s3){
+  const oe=observerEmit;
+  if(!oe || (oe.strength*oe.life<0.04 && oe.kind==='hito' && impulse<0.08)){
+    // cono tenue siempre desde hito (omnipresión de fondo)
+  }
+  const pr=project(oe.x-0.5, oe.y-0.5, oe.z-0.5, cx, cy, s3);
+  const life=Math.max(0.15, oe.life);
+  const str=Math.max(0.12, oe.strength);
+  const baseR=(55+90*str)*pr.p*life;
+  const ie=typeof getImpulseEff==='function'?getImpulseEff():0;
+  const pulse=0.85+0.15*Math.sin(time*2.2+oe.age);
+
+  // anillos del cono de fuga (perspectiva del punto emisor)
+  ctx.save();
+  for(let i=3;i>=0;i--){
+    const t=i/3;
+    const R=baseR*(0.35+0.65*t);
+    const a=(0.14-0.03*i)*str*life*pulse*(oe.kind==='drag'?1.1:1);
+    const hue=oe.kind==='spawn'?200:oe.kind==='drag'?35:280;
+    ctx.strokeStyle=hsl(hue, 70, 72, a);
+    ctx.lineWidth=(1.2-0.15*i)*pr.p;
+    ctx.beginPath(); ctx.arc(pr.sx, pr.sy, R, 0, Math.PI*2); ctx.stroke();
+  }
+  // núcleo del emisor
+  const g=ctx.createRadialGradient(pr.sx,pr.sy,0,pr.sx,pr.sy,baseR*0.55);
+  const a0=0.22*str*life*pulse;
+  g.addColorStop(0, hsl(oe.kind==='drag'?42:195, 90, 80, a0));
+  g.addColorStop(0.45, hsl(210, 70, 60, a0*0.35));
+  g.addColorStop(1, 'rgba(20,40,80,0)');
+  ctx.fillStyle=g;
+  ctx.beginPath(); ctx.arc(pr.sx,pr.sy,baseR*0.55,0,Math.PI*2); ctx.fill();
+
+  // rayos tenues (fuga)
+  if(str*life>0.2){
+    const n=6;
+    for(let i=0;i<n;i++){
+      const ang=time*0.35+i*(Math.PI*2/n)+oe.age*0.2;
+      const R2=baseR*1.05;
+      ctx.strokeStyle=hsl(190, 60, 70, 0.06*str*life);
+      ctx.lineWidth=0.8*pr.p;
+      ctx.beginPath();
+      ctx.moveTo(pr.sx, pr.sy);
+      ctx.lineTo(pr.sx+Math.cos(ang)*R2, pr.sy+Math.sin(ang)*R2);
+      ctx.stroke();
+    }
+  }
+  // marca de J_eff en el borde si zona caliente
+  if(ie>0.35){
+    ctx.strokeStyle=hsl(15, 90, 60, 0.12+0.2*Math.min(1,(ie-0.35)/0.3));
+    ctx.lineWidth=1.4*pr.p;
+    ctx.setLineDash([4,5]);
+    ctx.beginPath(); ctx.arc(pr.sx,pr.sy,baseR*1.12,0,Math.PI*2); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+  ctx.restore();
+}
+
+function drawFugaRetencionHUD(ctx, W, H){
+  const fr=computeFugaRetencion();
+  const pad=12;
+  const bw=Math.min(152, W*0.26);
+  const x=W-pad-bw, y=H-pad-52;
+  ctx.save();
+  ctx.fillStyle='rgba(8,14,28,0.55)';
+  ctx.strokeStyle='rgba(140,170,210,0.22)';
+  ctx.lineWidth=1;
+  if(typeof roundRect==='function'){ roundRect(ctx,x,y,bw,48,8); ctx.fill(); ctx.stroke(); }
+  else { ctx.fillRect(x,y,bw,48); }
+  ctx.font='600 9px Outfit,sans-serif';
+  ctx.fillStyle='rgba(160,190,220,0.85)';
+  ctx.fillText('observador · emisor', x+8, y+12);
+  ctx.font='500 9px Outfit,sans-serif';
+  ctx.fillStyle='rgba(120,200,230,0.9)';
+  ctx.fillText('fuga', x+8, y+26);
+  ctx.fillStyle='rgba(220,180,120,0.9)';
+  ctx.fillText('retención', x+8, y+40);
+  // barras
+  const bx=x+62, bw2=bw-72, bh=5;
+  ctx.fillStyle='rgba(40,60,90,0.8)';
+  ctx.fillRect(bx, y+21, bw2, bh);
+  ctx.fillRect(bx, y+35, bw2, bh);
+  ctx.fillStyle='rgba(80,190,230,0.85)';
+  ctx.fillRect(bx, y+21, bw2*fr.fuga, bh);
+  ctx.fillStyle='rgba(230,170,90,0.85)';
+  ctx.fillRect(bx, y+35, bw2*fr.retencion, bh);
+  ctx.restore();
+}
+
+
+function drawField(){
+  if(!W) return;
+  // cielo cotton-candy / pin-up
+  const sky=ctx.createLinearGradient(0,0,W,H);
+  // fondo azul muy oscuro
+  sky.addColorStop(0,'#0a1228'); sky.addColorStop(0.45,'#060a18'); sky.addColorStop(1,'#04060e');
+  ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
+  for(const s of stars){
+    const tw=0.4+0.5*Math.sin(time*1.2+s.ph);
+    ctx.fillStyle=`rgba(200,220,255,${(0.15+tw*0.45).toFixed(3)})`;
+    ctx.beginPath(); ctx.arc(s.x*W, s.y*H, s.r*1.1, 0, Math.PI*2); ctx.fill();
+  }
+  const cx=W/2, cy=H/2;
+  const s3=Math.min(W,H)*0.28*(1+Math.sin(time*0.1)*0.04)*zoom;
+
+  // capas de escala R(r) y r* alrededor del hito
+  drawScaleRings(cx,cy,s3);
+  // cono de influencia del observador-emisor (fuga)
+  drawObserverCone(cx,cy,s3);
+  // el atractor del tirón no se materializa: solo se lee en la dinámica de los núcleos
+
+  // caja: dodecaedro + cubo — aristas en trazos tenues
+  ctx.save();
+  ctx.setLineDash([3.5, 5.5]);
+  ctx.lineCap='round';
+  {
+    const dpts=DODECA.verts.map(v=>project(v[0],v[1],v[2],cx,cy,s3));
+    for(const [i,j] of DODECA.edges){
+      const a=dpts[i], b=dpts[j];
+      const avgZ=(a.z+b.z)/2;
+      const al=Math.max(0.08,Math.min(0.22,0.12+avgZ*0.06));
+      ctx.strokeStyle=`rgba(190,200,215,${al.toFixed(3)})`;
+      ctx.lineWidth=0.85;
+      ctx.beginPath(); ctx.moveTo(a.sx,a.sy); ctx.lineTo(b.sx,b.sy); ctx.stroke();
+    }
+  }
+  {
+    const cubeVerts=[
+      [-0.96,-0.96,-0.96],[0.96,-0.96,-0.96],[0.96,0.96,-0.96],[-0.96,0.96,-0.96],
+      [-0.96,-0.96,0.96],[0.96,-0.96,0.96],[0.96,0.96,0.96],[-0.96,0.96,0.96]
+    ];
+    const cpts=cubeVerts.map(v=>project(v[0],v[1],v[2],cx,cy,s3));
+    const edges=[[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+    for(const [i,j] of edges){
+      const a=cpts[i], b=cpts[j];
+      const avgZ=(a.z+b.z)/2;
+      const al=Math.max(0.07,Math.min(0.20,0.11+avgZ*0.05));
+      ctx.strokeStyle=`rgba(185,195,210,${al.toFixed(3)})`;
+      ctx.lineWidth=0.8;
+      ctx.beginPath(); ctx.moveTo(a.sx,a.sy); ctx.lineTo(b.sx,b.sy); ctx.stroke();
+    }
+  }
+  ctx.setLineDash([]);
+  ctx.restore();
+  // ondas grises efímeras al atravesar caras del dodecaedro
+  for(const f of faceWaves){
+    const pr=project(f.x-0.5,f.y-0.5,f.z-0.5,cx,cy,s3);
+    const R=14*pr.p*f.life;
+    ctx.strokeStyle=`rgba(160,170,185,${(0.35*f.life).toFixed(3)})`;
+    ctx.lineWidth=1.1*pr.p;
+    ctx.beginPath(); ctx.arc(pr.sx,pr.sy,R,0,Math.PI*2); ctx.stroke();
+    ctx.strokeStyle=`rgba(140,150,165,${(0.18*f.life).toFixed(3)})`;
+    ctx.beginPath(); ctx.arc(pr.sx,pr.sy,R*1.35,0,Math.PI*2); ctx.stroke();
+  }
+  // reacciones animadas al contacto con límites fantasma
+  for(const h of cubeHits){
+    const pr=project(h.x-0.5,h.y-0.5,h.z-0.5,cx,cy,s3);
+    const R=10*pr.p*(0.4+0.6*h.life);
+    const g=ctx.createRadialGradient(pr.sx,pr.sy,0,pr.sx,pr.sy,R);
+    g.addColorStop(0,`rgba(148,163,184,${(0.45*h.life).toFixed(3)})`);
+    g.addColorStop(1,`rgba(100,116,139,0)`);
+    ctx.fillStyle=g;
+    ctx.beginPath(); ctx.arc(pr.sx,pr.sy,R,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle=`rgba(203,213,225,${(0.4*h.life).toFixed(3)})`;
+    ctx.lineWidth=1.2*pr.p;
+    ctx.beginPath(); ctx.arc(pr.sx,pr.sy,R*1.15,0,Math.PI*2); ctx.stroke();
+  }
+  // estela de polvo ambiental (más intensa)
+  for(const d of dustMotes){
+    const pr=project(d.x-0.5,d.y-0.5,d.z-0.5,cx,cy,s3);
+    const al=Math.min(0.55,d.life*0.5);
+    ctx.fillStyle=`rgba(180,190,210,${al.toFixed(3)})`;
+    ctx.beginPath(); ctx.arc(pr.sx,pr.sy,d.r*pr.p,0,Math.PI*2); ctx.fill();
+  }
+
+  // interference residue (subtle fringes on mid plane projection)
+  {
+    let maxA=1e-6;
+    for(let i=0;i<interf.length;i++) maxA=Math.max(maxA,Math.abs(interf[i]));
+    if(maxA>0.02){
+      for(let j=0;j<IH;j+=1){
+        for(let i=0;i<IW;i+=1){
+          const v=interf[j*IW+i]/maxA;
+          if(Math.abs(v)<0.12) continue;
+          const wx=i/IW, wy=j/IH, wz=0.5;
+          const pr=project(wx-0.5,wy-0.5,wz-0.5,cx,cy,s3);
+          const alpha=Math.min(0.32, Math.abs(v)*0.28);
+          ctx.fillStyle=v>0?hsl(190,90,60,alpha):hsl(280,80,55,alpha);
+          ctx.beginPath();
+          ctx.arc(pr.sx,pr.sy,2.8*pr.p,0,Math.PI*2);
+          ctx.fill();
+        }
+      }
+    }
+  }
+
+  // tunnel & reaction flashes — anillo expansivo + chispas radiales en eventos grandes
+  for(const f of tunnelFlashes){
+    const pr=project(f.x-0.5,f.y-0.5,f.z-0.5,cx,cy,s3);
+    const scl=f.scale||1;
+    const hue=f.hue??160;
+    const R=22*pr.p*f.life*scl;
+    const g=ctx.createRadialGradient(pr.sx,pr.sy,0,pr.sx,pr.sy,R);
+    g.addColorStop(0,hsl(hue,100,75,0.75*f.life));
+    g.addColorStop(0.5,hsl(hue,95,60,0.35*f.life));
+    g.addColorStop(1,hsl(hue,90,50,0));
+    ctx.fillStyle=g;
+    ctx.beginPath(); ctx.arc(pr.sx,pr.sy,R,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle=hsl(hue,100,82,0.5*f.life);
+    ctx.lineWidth=1.4*pr.p;
+    ctx.beginPath(); ctx.arc(pr.sx,pr.sy,R*1.18,0,Math.PI*2); ctx.stroke();
+    if(scl>1.15){
+      const rays=7;
+      for(let r=0;r<rays;r++){
+        const ang=(r/rays)*Math.PI*2+f.life*2.4;
+        ctx.strokeStyle=hsl(hue,100,85,0.42*f.life);
+        ctx.lineWidth=1*pr.p;
+        ctx.beginPath();
+        ctx.moveTo(pr.sx+Math.cos(ang)*R*0.65, pr.sy+Math.sin(ang)*R*0.65);
+        ctx.lineTo(pr.sx+Math.cos(ang)*R*1.5,  pr.sy+Math.sin(ang)*R*1.5);
+        ctx.stroke();
+      }
+    }
+  }
+
+  // barriers — se dibuja el plano real y-z del muro (grosor en x), así las
+  // aperturas de la doble rendija y el muro sólido del túnel se ven correctos
+  for(const b of barriers){
+    const midX=(b.x0+b.x1)/2;
+    const corners=[
+      [midX,b.y0,b.z0],[midX,b.y1,b.z0],[midX,b.y1,b.z1],[midX,b.y0,b.z1]
+    ];
+    const pts=corners.map(([x,y,z])=>project(x-0.5,y-0.5,z-0.5,cx,cy,s3));
+    const pulse=0.5+0.5*Math.sin(time*1.6+b.y0*11);
+    ctx.fillStyle=`rgba(148,163,184,${(0.055+0.05*pulse).toFixed(3)})`;
+    ctx.strokeStyle=`rgba(103,232,249,${(0.28+0.24*pulse).toFixed(3)})`;
+    ctx.lineWidth=1.1;
+    ctx.beginPath();
+    pts.forEach((p,i)=>{if(i===0)ctx.moveTo(p.sx,p.sy);else ctx.lineTo(p.sx,p.sy)});
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+  }
+
+  // soft links
+  const entProj=new Map();
+  for(const e of particles){
+    entProj.set(e.id,{...project(e.x-0.5,e.y-0.5,e.z-0.5,cx,cy,s3), e});
+  }
+  const links=[...softLinks.values()].sort((a,b)=>{
+    const pa=entProj.get(a.a), pb=entProj.get(a.b);
+    const qa=entProj.get(b.a), qb=entProj.get(b.b);
+    const za=pa&&pb?(pa.z+pb.z)/2:-9, zb=qa&&qb?(qa.z+qb.z)/2:-9;
+    return za-zb;
+  });
+  // which particles are linked
+  const linkedIds=new Set();
+  for(const L of softLinks.values()){
+    if(L.alpha>0.04){ linkedIds.add(L.a); linkedIds.add(L.b); }
+  }
+
+  /* ── Red relacional (spin-network look): malla tenue + núcleo + geometría ── */
+  // Lazos débiles de proximidad (quantum links potenciales) — no solo stuck
+  {
+    const n=particles.length;
+    const maxWeak=n>60?80:n>30?140:220;
+    let drawn=0;
+    const reachNet=Math.max(0.12, (typeof reach==='number'?reach:0.28)*0.85);
+    for(let i=0;i<n && drawn<maxWeak;i++){
+      const a=particles[i];
+      const pa=entProj.get(a.id); if(!pa) continue;
+      for(let j=i+1;j<n && drawn<maxWeak;j++){
+        const b=particles[j];
+        const d=Math.hypot(a.x-b.x,a.y-b.y,a.z-b.z);
+        if(d>reachNet||d<1e-6) continue;
+        // omitir si ya hay softLink visible
+        const k=a.id<b.id?a.id+'_'+b.id:b.id+'_'+a.id;
+        // linkKey may differ — skip heavy; draw weak always if far from strong alpha
+        const pb=entProj.get(b.id); if(!pb) continue;
+        const t=1-d/reachNet;
+        const al=0.028+0.07*t*t;
+        const hueMix=((a.hue||200)+(b.hue||200))/2;
+        ctx.strokeStyle=hsl(190+hueMix*0.05, 70, 70, al);
+        ctx.lineWidth=0.55*Math.max(0.4,(pa.p+pb.p)/2);
+        ctx.lineCap='round';
+        ctx.beginPath(); ctx.moveTo(pa.sx,pa.sy); ctx.lineTo(pb.sx,pb.sy); ctx.stroke();
+        drawn++;
+      }
+    }
+  }
+
+  // Envolvente + radios al baricentro por coro (spatial geometry)
+  {
+    const groups=new Map();
+    for(const e of particles){
+      if(!e.moleculeId) continue;
+      if(!groups.has(e.moleculeId)) groups.set(e.moleculeId,[]);
+      groups.get(e.moleculeId).push(e);
+    }
+    for(const members of groups.values()){
+      if(members.length<2) continue;
+      const pts=[];
+      let cx=0,cy=0,w=0;
+      for(const e of members){
+        const pr=entProj.get(e.id); if(!pr) continue;
+        pts.push(pr);
+        const m=e.mass||1;
+        cx+=pr.sx*m; cy+=pr.sy*m; w+=m;
+      }
+      if(pts.length<2||w<1e-6) continue;
+      cx/=w; cy/=w;
+      // radios tenues nodo → centro del coro
+      for(const pr of pts){
+        ctx.strokeStyle='rgba(160,200,255,0.06)';
+        ctx.lineWidth=0.6;
+        ctx.beginPath(); ctx.moveTo(pr.sx,pr.sy); ctx.lineTo(cx,cy); ctx.stroke();
+      }
+      // envolvente circular aproximada
+      let R=0;
+      for(const pr of pts) R=Math.max(R, Math.hypot(pr.sx-cx,pr.sy-cy));
+      R+=8;
+      ctx.strokeStyle='rgba(140,190,255,0.14)';
+      ctx.lineWidth=1.1;
+      ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.stroke();
+      ctx.strokeStyle='rgba(180,210,255,0.08)';
+      ctx.beginPath(); ctx.arc(cx,cy,R*1.12,0,Math.PI*2); ctx.stroke();
+      // núcleo del coro
+      const g=ctx.createRadialGradient(cx,cy,0,cx,cy,R*0.45);
+      g.addColorStop(0,'rgba(200,220,255,0.07)');
+      g.addColorStop(1,'rgba(100,150,220,0)');
+      ctx.fillStyle=g;
+      ctx.beginPath(); ctx.arc(cx,cy,R*0.45,0,Math.PI*2); ctx.fill();
+    }
+  }
+
+  // Atractor emergente del tirón: campo gravitatorio simbólico
+  if(tugState.active&&tugState.attractor){
+    const att=tugState.attractor;
+    const pr=project(att.x-0.5,att.y-0.5,att.z-0.5,cx,cy,s3);
+    const g=ctx.createRadialGradient(pr.sx,pr.sy,0,pr.sx,pr.sy,48*pr.p);
+    g.addColorStop(0,'rgba(180,160,255,0.10)');
+    g.addColorStop(0.5,'rgba(120,140,220,0.04)');
+    g.addColorStop(1,'rgba(80,100,180,0)');
+    ctx.fillStyle=g;
+    ctx.beginPath(); ctx.arc(pr.sx,pr.sy,48*pr.p,0,Math.PI*2); ctx.fill();
+  }
+
+  function bodyRadPx(e, pr){
+    // tamaño en pantalla ∝ 1/masa (Ondina = RAD_PX_UNIT)
+    return RAD_PX_UNIT*massSizeScale(e.kind)*(pr.p||1);
+  }
+  for(const L of links){
+    const pa=entProj.get(L.a), pb=entProj.get(L.b);
+    if(!pa||!pb||L.alpha<0.01) continue;
+    const sameCrystal=pa.e.crystallized && pb.e.crystallized && pa.e.moleculeId && pa.e.moleculeId===pb.e.moleculeId;
+    const stuck=!!L.stuck;
+    const pulse=0.9+0.1*Math.sin(time*2.5+L.a);
+    const depthS=Math.max(0.55, Math.min(1.35, 0.75+((pa.z+pb.z)/2)*0.4));
+    const al=Math.min(1, L.alpha*(stuck?1.45:1.0));
+    // Radios en pantalla: el lazo une superficies, no centros (como la red de la figura)
+    const ra=bodyRadPx(pa.e, pa), rb=bodyRadPx(pb.e, pb);
+    const ddx=pb.sx-pa.sx, ddy=pb.sy-pa.sy;
+    const len=Math.hypot(ddx,ddy)||1;
+    if(len<ra+rb+0.5) continue; // demasiado solapados: no dibujar barra
+    const ux=ddx/len, uy=ddy/len;
+    const x1=pa.sx+ux*ra, y1=pa.sy+uy*ra;
+    const x2=pb.sx-ux*rb, y2=pb.sy-uy*rb;
+    // glow de campo del lazo (spin-network)
+    if(stuck||L.alpha>0.18){
+      ctx.strokeStyle=sameCrystal
+        ? `rgba(180,210,255,${(0.08*al*pulse).toFixed(3)})`
+        : `rgba(140,200,255,${(0.06*al*pulse).toFixed(3)})`;
+      ctx.lineWidth=(stuck?5.5:3.2)*depthS;
+      ctx.lineCap='round';
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    }
+    // barra geométrica principal
+    let stroke;
+    if(sameCrystal) stroke=`rgba(200,230,255,${(0.75*al*pulse).toFixed(3)})`;
+    else if(L.lineage) stroke=`rgba(255,160,200,${(0.7*al*pulse).toFixed(3)})`;
+    else {
+      const hh=((pa.e.hue+pb.e.hue)/2)|0;
+      stroke=hsl(hh, 75, 78, 0.65*al*pulse);
+    }
+    ctx.strokeStyle=stroke;
+    ctx.lineCap='round';
+    ctx.lineWidth=(stuck?2.4:1.1+L.alpha*1.6)*depthS;
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    // núcleo del enlace (punto medio luminoso)
+    if(stuck){
+      const mx=(x1+x2)*0.5, my=(y1+y2)*0.5;
+      const rg=ctx.createRadialGradient(mx,my,0,mx,my,4*depthS);
+      rg.addColorStop(0,`rgba(230,245,255,${(0.45*al).toFixed(3)})`);
+      rg.addColorStop(1,`rgba(150,190,255,0)`);
+      ctx.fillStyle=rg;
+      ctx.beginPath(); ctx.arc(mx,my,4*depthS,0,Math.PI*2); ctx.fill();
+    }
+  }
+
+  // trails (suaves, no compiten con los bonds)
+  const trailStride=particles.length>90?3:particles.length>50?2:1;
+  for(const e of particles){
+    const tr=trails.get(e.id);
+    if(!tr||tr.length<2) continue;
+    for(let i=trailStride;i<tr.length;i+=trailStride){
+      const a=tr[i-trailStride], b=tr[i];
+      const pa=project(a.x-0.5,a.y-0.5,a.z-0.5,cx,cy,s3);
+      const pb=project(b.x-0.5,b.y-0.5,b.z-0.5,cx,cy,s3);
+      const al=Math.min(a.life,b.life)*0.28;
+      const taper=i/tr.length;
+      ctx.strokeStyle=hsl(e.hue,80,70,Math.min(0.35,al));
+      ctx.lineWidth=(0.6+1.2*taper)*pb.p;
+      ctx.lineCap='round';
+      ctx.beginPath(); ctx.moveTo(pa.sx,pa.sy); ctx.lineTo(pb.sx,pb.sy); ctx.stroke();
+    }
+  }
+
+  // ── Partículas: simbología molecular (esferas + orbitales / terminales) ──
+  const order=[...particles].sort((a,b)=>{
+    const pa=entProj.get(a.id), pb=entProj.get(b.id);
+    return (pa?.z??0)-(pb?.z??0);
+  });
+  const lodHigh=particles.length>90, lodMed=particles.length>50;
+
+  function molSphere(x,y,r,hue,sat,lit,a){
+    const g=ctx.createRadialGradient(x-r*0.28,y-r*0.32,r*0.05,x,y,r);
+    g.addColorStop(0,hsl(hue,Math.min(100,sat+15),Math.min(95,lit+22),a));
+    g.addColorStop(0.45,hsl(hue,sat,lit,a*0.95));
+    g.addColorStop(1,hsl(hue,sat*0.85,Math.max(18,lit-28),a*0.85));
+    ctx.fillStyle=g;
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
+  }
+  function molOrbit(x,y,rx,ry,rot,hue,alpha,lw){
+    ctx.save();
+    ctx.translate(x,y); ctx.rotate(rot);
+    ctx.strokeStyle=hsl(hue,85,70,alpha);
+    ctx.lineWidth=lw;
+    ctx.beginPath(); ctx.ellipse(0,0,rx,ry,0,0,Math.PI*2); ctx.stroke();
+    ctx.restore();
+  }
+  function molSpoke(x,y,ang,len,rTip,hue,alpha){
+    const x2=x+Math.cos(ang)*len, y2=y+Math.sin(ang)*len;
+    ctx.strokeStyle=hsl(hue,80,65,alpha*0.85);
+    ctx.lineWidth=Math.max(1.2,rTip*0.55);
+    ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x2,y2); ctx.stroke();
+    molSphere(x2,y2,rTip,hue,90,72,alpha);
+  }
+
+  for(const e of order){
+    const pr=entProj.get(e.id);
+    if(!pr) continue;
+    const isLinked=linkedIds.has(e.id);
+    const isExcited=(excitedUntil.get(e.id)||0)>time;
+    const ph=e.vibratePhase||(e.id*1.7);
+    const baseM=massOfKind(e.kind);
+    const sc=massSizeScale(e.kind); // ∝ 1/masa; Ondina = 1 (más grande)
+    const presence=massPresence(e.kind); // ∝ masa; Ondina plena, Aurion tenue
+    const bFreq=massBreathFreq(e.kind);
+    const breathAmp=0.028+0.035*sc;
+    const breath=1+breathAmp*Math.sin(time*bFreq+ph);
+    const rad=RAD_PX_UNIT*sc*pr.p*breath*(isLinked?1.04:1)*(isExcited?1.08:1);
+    const hue=e.hue;
+    const k=e.kind;
+    const aCore=presence*(isExcited?1:0.92);
+
+    // núcleo principal (esfera 3D estilizada) — alpha ∝ masa
+    molSphere(pr.sx, pr.sy, rad, hue, isLinked||isExcited?92:78, isLinked||isExcited?70:58, aCore);
+
+    // simbología por especie
+    if(k==='e'){
+      // almita: orbitales tipo átomo
+      if(!lodHigh){
+        molOrbit(pr.sx,pr.sy, rad*1.55, rad*0.55, time*0.7+ph, hue, 0.35*presence, 1.1*pr.p);
+        molOrbit(pr.sx,pr.sy, rad*1.35, rad*0.5, -time*0.55+ph+1.0, (hue+40)%360, 0.28*presence, 1.0*pr.p);
+      }
+      molSphere(pr.sx+Math.cos(time*2+ph)*rad*1.2, pr.sy+Math.sin(time*2+ph)*rad*0.45, rad*0.22, hue, 95, 80, 0.7*presence);
+    } else if(k==='p'||k==='A'){
+      // núcleo / Aurion: terminales radiales (estrella molecular)
+      const n=k==='A'?6:5;
+      for(let i=0;i<n;i++){
+        const ang=ph+i*(Math.PI*2/n)+time*0.15;
+        molSpoke(pr.sx,pr.sy, ang, rad*(1.35+0.15*Math.sin(time*2+i)), rad*0.28, hue, 0.75*presence);
+      }
+    } else if(k==='n'){
+      // eco: anillos concéntricos
+      if(!lodHigh){
+        ctx.strokeStyle=hsl(hue,70,65,0.35*presence);
+        ctx.lineWidth=1.2*pr.p;
+        ctx.beginPath(); ctx.arc(pr.sx,pr.sy,rad*1.35,0,Math.PI*2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(pr.sx,pr.sy,rad*1.7,0,Math.PI*2); ctx.stroke();
+      }
+    } else if(k==='γ'){
+      // luciérnaga: núcleo + 3 terminales brillantes
+      for(let i=0;i<3;i++){
+        const ang=time*3.2+i*(Math.PI*2/3)+ph;
+        molSpoke(pr.sx,pr.sy, ang, rad*1.5, rad*0.26, 48, 0.85*presence);
+      }
+    } else if(k==='H'||k==='φ'){
+      // náyade / áurea: orbitales + satélite
+      if(!lodHigh){
+        molOrbit(pr.sx,pr.sy, rad*1.6, rad*0.7, time*0.4+ph, hue, 0.4*presence, 1.3*pr.p);
+        molOrbit(pr.sx,pr.sy, rad*1.25, rad*0.95, time*0.25+ph+0.8, (hue+30)%360, 0.3*presence, 1.0*pr.p);
+      }
+      molSphere(pr.sx+Math.cos(time*1.5+ph)*rad*1.35, pr.sy+Math.sin(time*1.5+ph)*rad*0.6, rad*0.32, hue, 90, 75, 0.8*presence);
+    } else if(k==='X'){
+      // umbra: tetrápoda
+      for(let i=0;i<4;i++){
+        const ang=ph+i*(Math.PI/2)+0.2*Math.sin(time*2);
+        molSpoke(pr.sx,pr.sy, ang, rad*1.45, rad*0.3, hue, 0.8*presence);
+      }
+    } else if(k==='Ψ'){
+      // ondina: lóbulo tipo orbital p
+      ctx.save();
+      ctx.translate(pr.sx,pr.sy);
+      ctx.rotate(ph+time*0.3);
+      const g2=ctx.createRadialGradient(0,-rad*0.6,0,0,-rad*0.6,rad*1.1);
+      g2.addColorStop(0,hsl(hue,90,75,0.55*presence));
+      g2.addColorStop(1,hsl(hue,80,50,0));
+      ctx.fillStyle=g2;
+      ctx.beginPath(); ctx.ellipse(0,-rad*0.55,rad*0.55,rad*0.95,0,0,Math.PI*2); ctx.fill();
+      const g3=ctx.createRadialGradient(0,rad*0.6,0,0,rad*0.6,rad*1.1);
+      g3.addColorStop(0,hsl(hue,90,75,0.55));
+      g3.addColorStop(1,hsl(hue,80,50,0));
+      ctx.fillStyle=g3;
+      ctx.beginPath(); ctx.ellipse(0,rad*0.55,rad*0.55,rad*0.95,0,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+      molSphere(pr.sx,pr.sy,rad*0.55,hue,95,80,0.95);
+    }
+
+    // highlight de enlace / excitación
+    if(isLinked){
+      ctx.strokeStyle=hsl(hue,90,80,0.25+0.1*Math.sin(time*3.5+e.id));
+      ctx.lineWidth=1.2*pr.p;
+      ctx.beginPath(); ctx.arc(pr.sx,pr.sy,rad*1.25,0,Math.PI*2); ctx.stroke();
+    }
+    if(e.crystallized&&e.moleculeId){
+      // marco de coro: hexágono suave
+      const R=rad*1.45;
+      ctx.strokeStyle=hsl(48,90,70,0.35+0.12*Math.sin(time*2.2+e.id));
+      ctx.lineWidth=1.15*pr.p;
+      ctx.beginPath();
+      for(let i=0;i<6;i++){
+        const a=i*(Math.PI/3)+time*0.15;
+        const px=pr.sx+Math.cos(a)*R, py=pr.sy+Math.sin(a)*R;
+        if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+      }
+      ctx.closePath(); ctx.stroke();
+    }
+    const age=time-(e.spawnTime||0);
+    if(age<0.45){
+      const t=age/0.45;
+      ctx.strokeStyle=hsl(hue,90,75,(1-t)*0.35);
+      ctx.lineWidth=1.4*pr.p;
+      ctx.beginPath(); ctx.arc(pr.sx,pr.sy,rad*0.5+(1-t*t)*22*pr.p,0,Math.PI*2); ctx.stroke();
+    }
+    if(e.id===playerId){
+      ctx.strokeStyle=hsl(330,85,55,0.45);
+      ctx.lineWidth=1.6*pr.p;
+      ctx.beginPath(); ctx.arc(pr.sx,pr.sy,rad*1.4,0,Math.PI*2); ctx.stroke();
+    }
+    if(tugState.active&&e.id===tugState.leaderId){
+      ctx.strokeStyle=hsl(42,90,60,0.5+0.2*Math.sin(time*3.5));
+      ctx.lineWidth=2*pr.p;
+      ctx.beginPath(); ctx.arc(pr.sx,pr.sy,rad*1.55,0,Math.PI*2); ctx.stroke();
+    }
+  }
+  // visualización de entropía del sistema
+  drawEntropyOverlay(ctx, W, H);
+  drawFugaRetencionHUD(ctx, W, H);
+
+  ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+  ctx.lineCap='butt';
+}
+
+function updateHUD(){
+  const el=document.getElementById('umbral');
+  if(!el) return;
+  const label=scale<0.33?`ÉTER SUTIL · conjunción`:
+    scale<0.66?`UMBRAL · tránsito`:`ÉTER DENSO · disolución`;
+  const sm=systemMass();
+  const pl=getPlayer();
+  const agarBit=pl?` · tú m=${pl.mass.toFixed(1)}`:(agarOn?' · click=jugar':'');
+  let starBit='';
+  if(scaleExp.rStar!=null){
+    const st=scaleExp.stableFrames>18?'✓':'…';
+    starBit=` · r* ${scaleExp.rStar.toFixed(2)} R=${(scaleExp.rStarR??0).toFixed(2)}${st}`;
+  }
+  el.textContent=label+` · Σm ${sm.toFixed(1)}`+(residualMass>0.05?` (res ${residualMass.toFixed(1)})`:'')+agarBit+starBit;
+  const fm=document.getElementById('fieldMetrics');
+  if(fm){
+    const fe=fieldEnergy;
+    const rStar=scaleExp.rStar!=null?scaleExp.rStar.toFixed(2):'—';
+    const tug=tugState.active?(tugState.leaderId!=null?' · tirón ON':' · tirón'):'';
+    const ie=cascadeState.impulseEff;
+    const hot=cascadeState.hot;
+    const moles=cascadeState.nMoles;
+    fm.classList.toggle('cascade-hot', hot);
+    fm.innerHTML=
+      `<b>E</b> ${fe.E_vivo.toFixed(2)} · `+
+      `<b>E<sub>rad</sub></b> ${fe.E_rad.toFixed(3)} · `+
+      `<b>bind</b> ${fe.bind.toFixed(2)} · `+
+      `núcleo ${(fe.frac_core*100).toFixed(0)}% · r* ${rStar} · Σm ${sm.toFixed(1)}`+
+      (residualMass>0.05?` · res ${residualMass.toFixed(1)}`:'')+
+      ` · adh ${fe.nStuck}`+tug+`<br>`+
+      (hot?`<span class="hot">CASCADA</span>`:`cascada`)+
+      ` · J=${impulse.toFixed(2)} · J<sub>eff</sub>=${ie.toFixed(2)}`+
+      (ie>FISSION_IMPULSE?' ≥umbral':' <umbral')+
+      ` · coros ${moles}`+
+      (cascadeState.waveFissions?` · oleada ${cascadeState.waveFissions}`:'')+
+      ` · Σfiss ${cascadeState.totalFissions}`;
+  }
+  const cl=document.getElementById('cascadeLog');
+  if(cl){
+    cl.textContent=cascadeState.log.length
+      ? cascadeState.log.slice(0,4).join(' · ')
+      : (cascadeState.hot?'zona caliente · P='+CASCADE_P+' por coro/frame':'cascada: en reposo (J_eff ≤ '+FISSION_IMPULSE+')');
+  }
+}
+
+/* ─── Destinos por etapas ───
+   Etapa 1: invocar un paraje con cierta alma seleccionada.
+   Etapas: tejer asociaciones/coros y disolverlas (sin eliminar materia).
+   Condiciones del éter alineadas a formar o a disolver. */
+const GOAL_KINDS=['e','p','n','γ','H','φ','A','X','Ψ'];
+const SCENE_META={
+  packet:{id:'packet', name:'Susurro', btn:'exPacket'},
+  entangle:{id:'entangle', name:'Lazo de Ananké', btn:'exEntangle'},
+  orbit:{id:'orbit', name:'Danza de Selene', btn:'exOrbit'},
+  lattice:{id:'lattice', name:'Telar de Moiras', btn:'exLattice'},
+  molecule:{id:'molecule', name:'Coro Nereida', btn:'exMolecule'},
+  fission:{id:'fission', name:'Rayo de Febo', btn:'exFission'},
+};
+const SCENE_IDS=Object.keys(SCENE_META);
+let goal=null;
+let wins=0;
+let lastSceneInvoke=null;
+/* Contadores de partida (estilo Candy Crush: recolectar por mecánicas) */
+const play={fusion:0, chorus:0, capture:0, collapse:0, fission:0, dissolve:0, associate:0, fago:0, lineage:0, byKind:{}, combo:0, chain:0, lastEventAt:0, score:0};
+const PLAY_PTS={fusion:120, chorus:200, capture:80, collapse:90, fission:150, dissolve:140, associate:100, fago:70, lineage:220};
+function resetPlay(){
+  play.fusion=0; play.chorus=0; play.capture=0; play.collapse=0; play.fission=0; play.dissolve=0; play.associate=0; play.fago=0; play.lineage=0;
+  play.byKind={}; play.combo=0; play.chain=0; play.lastEventAt=0; play.score=0;
+  updateScoreUI();
+}
+function updateScoreUI(){ /* puntos/combos ocultos del panel Destino */ }
+function flashCombo(n){
+  const t=document.getElementById('comboToast');
+  if(!t) return;
+  // sin “Apoteosis” permanente: toast breve y labels cortas
+  if(n<2){ t.classList.remove('show'); return; }
+  const labels={2:'Doble',3:'Triple',4:'¡Éter!',5:'¡Marea!'};
+  t.textContent=(labels[n]||('×'+n))+'  ·  +'+Math.round(40*n);
+  t.classList.add('show');
+  clearTimeout(flashCombo._tm);
+  flashCombo._tm=setTimeout(()=>{ t.classList.remove('show'); t.textContent=''; }, 700);
+}
+function notePlay(ev, kind){
+  if(play[ev]!=null) play[ev]++;
+  if(kind){ play.byKind[kind]=(play.byKind[kind]||0)+1; }
+  const chained=time-play.lastEventAt<1.35;
+  if(chained){ play.chain++; play.combo++; }
+  else play.chain=1;
+  play.lastEventAt=time;
+  const base=PLAY_PTS[ev]||50;
+  const pts=Math.round(base*(1+(play.chain-1)*0.35));
+  play.score+=pts;
+  updateScoreUI();
+  if(play.chain>=2) flashCombo(play.chain);
+}
+
+function countByKind(){
+  const c={};
+  for(const p of particles) c[p.kind]=(c[p.kind]||0)+1;
+  return c;
+}
+function presentKinds(){
+  return [...new Set(particles.map(p=>p.kind))];
+}
+function countCoros(){
+  return new Set(particles.filter(p=>p.moleculeId).map(p=>p.moleculeId)).size;
+}
+
+function countStuckPairs(){
+  let n=0;
+  for(const L of softLinks.values()){
+    if(L.stuck||(L.alpha||0)>0.28) n++;
+  }
+  return n;
+}
+function countClusterSizes(){
+  /* tamaños de componentes por softLinks stuck + moleculeId */
+  const parent=new Map();
+  const find=id=>{
+    if(!parent.has(id)) parent.set(id,id);
+    if(parent.get(id)!==id) parent.set(id, find(parent.get(id)));
+    return parent.get(id);
+  };
+  const uni=(a,b)=>{a=find(a);b=find(b); if(a!==b) parent.set(a,b);};
+  for(const p of particles) parent.set(p.id,p.id);
+  for(const L of softLinks.values()){
+    if(L.stuck||(L.alpha||0)>0.28) uni(L.a,L.b);
+  }
+  for(const p of particles){
+    if(p.moleculeId){
+      for(const q of particles) if(q.moleculeId===p.moleculeId) uni(p.id,q.id);
+    }
+  }
+  const sizes=new Map();
+  for(const p of particles){
+    const r=find(p.id);
+    sizes.set(r,(sizes.get(r)||0)+1);
+  }
+  return [...sizes.values()];
+}
+function countAssociations(minSize=2){
+  return countClusterSizes().filter(s=>s>=minSize).length;
+}
+function countAssociationMembers(minSize=2){
+  return countClusterSizes().filter(s=>s>=minSize).reduce((a,b)=>a+b,0);
+}
+
+function iconOf(kind){
+  return kindMeta[kind]?kindMeta[kind].label:'?';
+}
+function nameOf(kind){
+  return kindMeta[kind]?kindMeta[kind].name:kind;
+}
+
+/* Objetivos: formar y disolver asociaciones (nada se elimina del éter).
+   La materia se reorganiza: lazos ↔ disolución al cambiar el medio o introducir un perturbador. */
+function makeObjectiveStage(){
+  const pool=['associate','chorus','dissolve','unbind','gather','fuse','fuseKind','capture','fago','lineage'];
+  const type=pool[(Math.random()*pool.length)|0];
+  if(type==='associate'){
+    const minSize=Math.random()>0.45?3:2;
+    const target=1+((Math.random()*2)|0);
+    return {type, minSize, target, base:0, peak:0,
+      label:`Teje ${target} asociación${target>1?'es':''} de ${minSize}+ almas`};
+  }
+  if(type==='chorus'){
+    const target=1+((Math.random()*2)|0);
+    return {type, target, base:0, label:`Forma ${target} coro${target>1?'s':''} (cristalización)`};
+  }
+  if(type==='dissolve'){
+    const target=1+((Math.random()*2)|0);
+    return {type, target, base:0, needPeak:true, peak:0, hadAssoc:false,
+      label:`Disuelve ${target} asociación${target>1?'es':''} (coros o lazos)`};
+  }
+  if(type==='unbind'){
+    const target=2+((Math.random()*3)|0);
+    return {type, target, base:0, peak:0, hadPeak:false,
+      label:`Afloja ${target} lazos (pares unidos → sueltos)`};
+  }
+  if(type==='gather'){
+    const kind=GOAL_KINDS[(Math.random()*GOAL_KINDS.length)|0];
+    const target=4+((Math.random()*4)|0);
+    return {type, kind, target, label:`Reúne ${target} × ${iconOf(kind)} ${nameOf(kind)}`};
+  }
+  if(type==='fuse'){
+    const target=2+((Math.random()*3)|0);
+    return {type, target, base:0, label:`Logra ${target} conjunciones (fusiones)`};
+  }
+  if(type==='fuseKind'){
+    const kind=['H','A','X','Ψ','φ'][(Math.random()*5)|0];
+    const target=1+((Math.random()*2)|0);
+    return {type, kind, target, base:0, label:`Forja ${target} × ${iconOf(kind)} ${nameOf(kind)} por conjunción`};
+  }
+  if(type==='capture'){
+    const target=2+((Math.random()*3)|0);
+    return {type, target, base:0, label:`Aurion captura ${target} almitas`};
+  }
+  if(type==='lineage'){
+    const target=1+((Math.random()*2)|0);
+    return {type:'lineage', target, base:0, label:`Restaura ${target} linaje${target>1?'s':''}`};
+  }
+  const target=2+((Math.random()*2)|0);
+  return {type:'fago', target, base:0, label:`Incorporá ${target} almas (fagocitosis · masa se conserva)`};
+}
+
+function makeGoal(){
+  const sceneId=SCENE_IDS[(Math.random()*SCENE_IDS.length)|0];
+  const scene=SCENE_META[sceneId];
+  const kind=GOAL_KINDS[(Math.random()*GOAL_KINDS.length)|0];
+  const stage2=makeObjectiveStage();
+  // a veces un tercer objetivo (combo Candy Crush)
+  const stages=[
+    {
+      type:'invoke',
+      sceneId,
+      sceneName:scene.name,
+      kind,
+      label:`Invoca «${scene.name}» con ${iconOf(kind)} ${nameOf(kind)}`
+    },
+    stage2
+  ];
+  if(Math.random()>0.55){
+    stages.push(makeObjectiveStage());
+  }
+  // formar lazos → vinculante; disolver → permitir abrir velo en la etapa
+  const needsBind=stages.some(s=>['fago','fuse','fuseKind','chorus','capture','lineage','associate','gather'].includes(s.type));
+  const needsDissolve=stages.some(s=>['dissolve','unbind'].includes(s.type));
+  const conditions={
+    marea: Math.random()>0.4,
+    pulso: Math.random()>0.75,
+    vinculante: needsDissolve&&!needsBind?false:(needsBind?true:Math.random()>0.45),
+    allowVeloShift: needsDissolve,
+  };
+  const condBits=[];
+  condBits.push(conditions.marea?'marea viva':'éter quieto');
+  if(conditions.pulso) condBits.push('pulso activo');
+  condBits.push(conditions.vinculante?'medio vinculante':'medio repulsivo');
+
+  const titles=['Rito del Éter','Jugada etérea','Desafío de la marea','Conjuro del velo','Prueba de los lazos'];
+  // movimientos al estilo Candy Crush (más etapas → más jugadas)
+  const moves=10+stages.length*4+((Math.random()*4)|0);
+  return {
+    title:titles[(Math.random()*titles.length)|0],
+    won:false,
+    lost:false,
+    stage:0,
+    stars:0,
+    startedAt:time,
+    moves, movesMax:moves,
+    conditions,
+    stages,
+    condText:condBits.join(' · ')
+  };
+}
+
+function applyGoalConditions(g){
+  const c=g.conditions;
+  langevinOn=!!c.marea;
+  const btnL=document.getElementById('btnLangevin');
+  if(btnL){
+    btnL.classList.toggle('on',langevinOn);
+    btnL.textContent=langevinOn?'Marea ON':'Marea OFF · éter quieto';
+  }
+  pulseM=!!c.pulso;
+  const btnP=document.getElementById('btnPulse');
+  if(btnP) btnP.classList.toggle('on',pulseM);
+  if(c.vinculante) setScale(0.12+Math.random()*0.18); // bien por debajo de 0.5 → fago/fusión
+  else setScale(0.62+Math.random()*0.22);
+  // si el rito pide fago, reforzá velo fino (por si el jugador subió el slider)
+  if(g.stages&&g.stages.some(s=>['fago','associate','fuse','fuseKind','chorus'].includes(s.type))&&scale>=SCALE_MEAN) setScale(0.22);
+  if(g.stages&&g.stages.some(s=>['dissolve','unbind'].includes(s.type))&&!g.stages.some(s=>['associate','chorus','fuse'].includes(s.type)))
+    setScale(0.68);
+}
+function openVeloForDissolve(){
+  // banda de disolución: scale ≳ 0.68 (disperseBias ≥ STUCK_BREAK_BIAS) + fatiga
+  setScale(Math.max(scale, 0.70+Math.random()*0.12));
+  reach=Math.max(reach, 0.28);
+  const r=document.getElementById('reach'); if(r) r.value=reach;
+  impulse=Math.min(1, impulse+0.18);
+  log('El velo se espesa · los lazos entran en fatiga y pueden disolverse');
+}
+
+
+function stageDescHTML(st){
+  if(st.type==='invoke')
+    return `Selecciona <b style="font-size:1.2em">${iconOf(st.kind)}</b> ${nameOf(st.kind)} y abre <em>${st.sceneName}</em>.`;
+  if(st.type==='associate')
+    return `Teje <b>${st.target}</b> asociación${st.target>1?'es':''} de <b>${st.minSize}+</b> almas. Nadie desaparece: solo se unen.`;
+  if(st.type==='chorus')
+    return `Forma <b>${st.target}</b> <em>coro${st.target>1?'s':''}</em> (lazos que cristalizan).`;
+  if(st.type==='dissolve')
+    return `Disolvé <b>${st.target}</b> asociación${st.target>1?'es':''}: subí el velo, introducí ✦ o perturbá el coro. Las almas se separan; no se eliminan.`;
+  if(st.type==='unbind')
+    return `Aflojá <b>${st.target}</b> lazos (pares unidos → sueltos) cambiando el medio o un perturbador.`;
+  if(st.type==='gather')
+    return `Reúne <b>${st.target}</b> × <b style="font-size:1.2em">${iconOf(st.kind)}</b> ${nameOf(st.kind)}.`;
+  if(st.type==='fuse')
+    return `Logra <b>${st.target}</b> <em>conjunciones</em> (masa reorganizada, no borrada).`;
+  if(st.type==='fuseKind')
+    return `Forja <b>${st.target}</b> × <b style="font-size:1.2em">${iconOf(st.kind)}</b> ${nameOf(st.kind)} por fusión.`;
+  if(st.type==='capture')
+    return `<b style="font-size:1.2em">A</b> Aurion captura <b>${st.target}</b> almitas.`;
+  if(st.type==='fago')
+    return `Incorporá <b>${st.target}</b> almas (fagocitosis; masa y residual se conservan).`;
+  if(st.type==='lineage')
+    return `Restaura <b>${st.target}</b> linaje${st.target>1?'s':''}.`;
+  return st.label||'…';
+}
+
+function shortLabel(st){
+  if(st.type==='invoke') return `${iconOf(st.kind)} ${st.sceneName}`;
+  if(st.kind) return `${iconOf(st.kind)} ${st.label||stageDescHTML(st).replace(/<[^>]+>/g,'')}`;
+  return st.label||st.type;
+}
+
+/* Tips de fuerzas mágicas alineados al objetivo actual de Destino */
+function tipsForStage(st, conditions){
+  if(!st) return '';
+  const k=st.kind, ico=k?iconOf(k):'', nom=k?nameOf(k):'';
+  const velo=conditions?.vinculante
+    ? '<strong>Velo fino</strong> — medio vinculante: las almas tejen lazos y coros.'
+    : '<strong>Velo espeso</strong> — medio más repulsivo: los lazos se aflojan y los coros se disuelven.';
+  const marea=conditions?.marea
+    ? '<strong>Marea viva</strong> — agita órbitas; ayuda a desarmar agrupaciones.'
+    : '<strong>Éter quieto</strong> — más predecible para tejer o soltar con cuidado.';
+  const tips=[];
+  if(st.type==='invoke'){
+    tips.push(`<strong>Paraje</strong> — seleccioná <em>${ico} ${nom}</em> y tocá <em>${st.sceneName}</em>.`);
+    tips.push(velo);
+  } else if(st.type==='associate'){
+    tips.push(`<strong>Asociación ${st.minSize}+</strong> — uní almas hasta ${st.target} grupo(s) con lazos o cristalización.`);
+    tips.push('<strong>Velo fino</strong> — necesario para fijar lazos.');
+    tips.push('<strong>Parajes</strong> — Coro Nereida o Telar de Moiras.');
+    tips.push('<strong>Conservación</strong> — nadie se borra: solo se adhieren.');
+  } else if(st.type==='chorus'){
+    tips.push('<strong>Coro</strong> — átomos (≈ φ A X Ψ) con lazos fuertes cristalizan.');
+    tips.push('<strong>Telar / Coro Nereida</strong> — siembran candidatos.');
+    tips.push(velo);
+  } else if(st.type==='dissolve'){
+    tips.push('<strong>Disolver</strong> — se sueltan lazos y se parten coros; las almas siguen en el éter.');
+    tips.push('<strong>Cómo</strong> — (1) subí el Velo ≳0.68 (fatiga→ruptura) · (2) separá pares o ✦ al coro · (3) marea ON / arrastre / Rayo de Febo.');
+    tips.push('<strong>Orden</strong> — primero la asociación; luego la disolución.');
+    tips.push(marea);
+  } else if(st.type==='unbind'){
+    tips.push('<strong>Aflojar lazos</strong> — reducí pares stuck.');
+    tips.push('<strong>Velo espeso + marea</strong> — medio repulsivo y agite.');
+    tips.push('<strong>Perturbador</strong> — una ✦ que cruce un lazo ayuda.');
+    tips.push(velo);
+  } else if(st.type==='gather'){
+    tips.push(`<strong>Reunir ${ico}</strong> — despertá hasta ${st.target} × ${nom}.`);
+    tips.push(velo);
+  } else if(st.type==='fuse'||st.type==='fuseKind'){
+    tips.push('<strong>Conjunción</strong> — subpartículas con lazos fuertes se reorganizan (masa se conserva).');
+    tips.push('<strong>Velo fino</strong> — bajo la media.');
+    if(st.type==='fuseKind') tips.push(`<strong>Producto</strong> — ${ico} ${nom}.`);
+  } else if(st.type==='capture'){
+    tips.push('<strong>Aurion A</strong> — atrae y captura almitas ·.');
+    tips.push(marea);
+  } else if(st.type==='fago'){
+    tips.push('<strong>Incorporar</strong> — ☉ ≈ φ A X absorben: masa↑, residual; sin borrado.');
+    tips.push('<strong>Velo bajo la media</strong> — medio vinculante.');
+    tips.push(marea);
+  } else if(st.type==='lineage'){
+    tips.push('<strong>Linaje</strong> — fragmentos del mismo ancestro se restauran.');
+    tips.push(velo); tips.push(marea);
+  } else {
+    tips.push(velo); tips.push(marea);
+  }
+  if(conditions?.pulso)
+    tips.push('<strong>Pulso</strong> — oscila la mantisa y el ritmo de lazos.');
+  return tips.join('<br>');
+}
+function updateLoreForGoal(){
+  const el=document.getElementById('lore');
+  if(!el) return;
+  if(!goal||goal.won){
+    el.innerHTML=
+      '<strong>Afinidad</strong> — naturalezas opuestas se buscan; las iguales se apartan.<br>'+
+      '<strong>Canto</strong> — almas en fase tejen lazos; desfasadas se rechazan.<br>'+
+      '<strong>Velo</strong> — fino favorece <em>asociación</em>; espeso, <em>disolución de lazos</em>.<br>'+
+      '<strong>Coros</strong> — se forman y se disuelven; nadie se elimina del éter.<br>'+
+      '<strong>Marea</strong> — el fervor agita; el espesor frena la deriva.<br>'+
+      '<strong>Conjuro de lazo</strong> — almas unidas oscilan como un resorte vivo.';
+    return;
+  }
+  if(goal.lost){
+    el.innerHTML='<strong>Sin movimientos</strong> — reintentá el mismo rito o pedí un <em>Nuevo destino</em>.<br>'+
+      '<strong>Tip</strong> — cada click, paraje o Disipar gasta 1 movimiento; planificá las jugadas.';
+    return;
+  }
+  const st=goal.stages[goal.stage];
+  el.innerHTML='<strong style="color:#c4b0ff">Para este destino</strong><br>'+tipsForStage(st, goal.conditions);
+}
+
+function renderGoalUI(){
+  if(!goal) return;
+  const st=goal.stages[goal.stage];
+  const stageMark=`${goal.stage+1}/${goal.stages.length}`;
+  document.getElementById('goalTitle').textContent=goal.title+(goal.lost?' · fallido':goal.won?' · listo':' · '+stageMark);
+  let list='<ul class="checklist">';
+  goal.stages.forEach((s,i)=>{
+    const cls=i<goal.stage?'done':(i===goal.stage&&!goal.won?'cur':'');
+    const mark=i<goal.stage||goal.won?'✓':(i===goal.stage?'▸':'○');
+    list+=`<li class="${cls}"><span class="ico">${mark}</span>${shortLabel(s)}</li>`;
+  });
+  list+='</ul>';
+  document.getElementById('goalDesc').innerHTML=
+    `<span style="opacity:.75">${goal.condText}</span><br>`+
+    (goal.won||goal.lost?'':stageDescHTML(st)+'<br>')+list;
+  updateMovesUI();
+  updateLoreForGoal();
+  const hint=document.getElementById('goalHint')||document.getElementById('labMode');
+  if(hint){
+    if(goal.lost) hint.textContent='sin movimientos';
+    else if(goal.won) hint.textContent='✓ listo';
+    else if(st.kind) hint.textContent=`${iconOf(st.kind)} ${st.type==='invoke'?st.sceneName:st.type}`;
+    else hint.textContent=goal.title;
+  }
+  const btnR=document.getElementById('btnRetry');
+  if(btnR) btnR.style.display=goal.lost?'':'none';
+}
+function updateMovesUI(){ /* contador de movimientos oculto del panel */ }
+function spendMove(n=1){
+  if(!goal||goal.won||goal.lost) return true;
+  goal.moves=Math.max(0, goal.moves-n);
+  updateMovesUI();
+  if(goal.moves<=0){
+    // aún puede ganar si el objetivo ya se cumple en este frame
+    setTimeout(()=>{
+      if(goal&&!goal.won&&goal.moves<=0) failGoal();
+    }, 80);
+  }
+  return goal.moves>0||goal.won;
+}
+function failGoal(){
+  if(!goal||goal.won||goal.lost) return;
+  goal.lost=true;
+  document.getElementById('goalBox').classList.add('lost');
+  document.getElementById('goalProg').textContent='sin movimientos';
+  renderGoalUI();
+  const banner=document.getElementById('winBanner');
+  banner.classList.add('show','lose');
+  banner.querySelector('span').textContent='El Éter se cierra';
+  const sub=document.getElementById('winSub');
+  if(sub) sub.textContent='reintentar o nuevo destino';
+  log('Rito fallido · sin movimientos');
+  setTimeout(()=>banner.classList.remove('show','lose'), 2800);
+}
+
+function armStageCounters(st){
+  if(!st) return;
+  if(st.type==='fuse') st.base=play.fusion;
+  if(st.type==='fuseKind') st.base=play.byKind[st.kind]||0;
+  if(st.type==='chorus') st.base=play.chorus;
+  if(st.type==='capture') st.base=play.capture;
+  if(st.type==='fago') st.base=play.fago;
+  if(st.type==='lineage') st.base=play.lineage;
+  if(st.type==='dissolve'){ st.base=(play.dissolve||0)+(play.fission||0); st.peak=0; st.hadAssoc=false; }
+  if(st.type==='unbind'){ st.peak=countStuckPairs(); st.hadPeak=st.peak>0; st.base=st.peak; }
+  if(st.type==='associate'){ st.base=countAssociations(st.minSize||2); st.peak=st.base; }
+  if((st.type==='dissolve'||st.type==='unbind')&&goal&&goal.conditions&&goal.conditions.allowVeloShift)
+    openVeloForDissolve();
+}
+
+function setGoal_DISABLED(g){
+  goal=g;
+  resetPlay();
+  document.getElementById('goalBox').classList.remove('won','lost');
+  document.getElementById('winBanner').classList.remove('show','lose');
+  document.getElementById('goalFill').style.width='0%';
+  document.getElementById('goalProg').textContent='etapa 1…';
+  applyGoalConditions(g);
+  armStageCounters(g.stages[0]);
+  renderGoalUI();
+  log('Destino · '+g.title+' · '+g.moves+' movimientos · '+g.condText);
+}
+
+function notifySceneInvoke(sceneId){
+  lastSceneInvoke={sceneId, kind:placeKind, at:time};
+  spendMove(1); // invocar paraje cuesta un movimiento
+  if(!goal||goal.won||goal.lost) return;
+  const st=goal.stages[goal.stage];
+  if(st&&st.type==='invoke'&&st.sceneId===sceneId&&placeKind===st.kind){
+    advanceGoalStage();
+  }
+}
+
+function advanceGoalStage(){
+  if(!goal||goal.won) return;
+  if(goal.stage<goal.stages.length-1){
+    goal.stage++;
+    const st=goal.stages[goal.stage];
+    armStageCounters(st);
+    const pct=((goal.stage)/goal.stages.length)*100;
+    document.getElementById('goalFill').style.width=pct.toFixed(1)+'%';
+    document.getElementById('goalProg').textContent='¡etapa! · sigue…';
+    renderGoalUI();
+    log('Etapa cumplida · ahora: '+st.label);
+    return;
+  }
+  goal.won=true;
+  wins++;
+  const elapsed=Math.max(1, time-(goal.startedAt||time));
+  goal.stars=elapsed<40?3:elapsed<90?2:1;
+  if(goal.stages.length>=3) goal.stars=Math.min(3, goal.stars+1);
+  if(play.score>=800) goal.stars=Math.min(3, goal.stars+1);
+  const starStr='★'.repeat(goal.stars)+'☆'.repeat(3-goal.stars);
+  document.getElementById('goalBox').classList.add('won');
+  document.getElementById('goalFill').style.width='100%';
+  document.getElementById('goalProg').textContent=`${starStr} · ritos ${wins}`;
+  updateScoreUI();
+  const banner=document.getElementById('winBanner');
+  banner.classList.add('show');
+  banner.querySelector('span').textContent=goal.stars>=3?'El Éter sonríe ★★★':'El Éter sonríe';
+  const sub=document.getElementById('winSub');
+  if(sub) sub.textContent=`${starStr} · siguiente rito…`;
+  const hint=document.getElementById('goalHint')||document.getElementById('labMode');
+  if(hint) hint.textContent='✓ '+starStr;
+  log('¡Victoria! '+starStr+' · '+goal.title);
+  // flujo Candy Crush: celebra y pasa al siguiente nivel
+  clearTimeout(advanceGoalStage._next);
+  advanceGoalStage._next=setTimeout(()=>{
+    banner.classList.remove('show');
+    if(typeof fillAttrTable==='function') fillAttrTable();
+  }, 3200);
+}
+
+function evaluateGoal(){
+  if(!goal||goal.won||goal.lost) return;
+  const st=goal.stages[goal.stage];
+  if(!st) return;
+  if(st.type==='invoke'){
+    document.getElementById('goalFill').style.width=((goal.stage)/goal.stages.length*100).toFixed(1)+'%';
+    document.getElementById('goalProg').textContent=`${iconOf(st.kind)} + «${st.sceneName}»`;
+    return;
+  }
+
+  const counts=countByKind();
+  let prog=0, total=1, done=false;
+  const base=st.base||0;
+
+  if(st.type==='gather'){
+    prog=counts[st.kind]||0; total=st.target; done=prog>=total;
+    document.getElementById('goalProg').textContent=`${iconOf(st.kind)} ${Math.min(prog,total)} / ${total}`;
+  } else if(st.type==='associate'){
+    const n=countAssociations(st.minSize||2);
+    if(n>(st.peak||0)) st.peak=n;
+    prog=n; total=st.target; done=n>=total;
+    document.getElementById('goalProg').textContent=`asoc. ${Math.min(n,total)} / ${total} · lazos ${countStuckPairs()}`;
+  } else if(st.type==='chorus'){
+    const live=countCoros();
+    prog=Math.max(play.chorus-base, live); total=st.target; done=prog>=total;
+    document.getElementById('goalProg').textContent=`coros ${Math.min(prog,total)} / ${total} · vivos ${live}`;
+  } else if(st.type==='dissolve'){
+    const liveA=countAssociations(2);
+    const liveC=countCoros();
+    if(liveA+liveC>0) st.hadAssoc=true;
+    if(liveA>(st.peak||0)) st.peak=liveA;
+    const ev=(play.dissolve||0)+(play.fission||0)-base;
+    if(st.hadAssoc&&liveA+liveC===0&&(st.peak||0)>=1){
+      prog=Math.max(ev, st.target); total=st.target; done=true;
+    } else {
+      prog=ev; total=st.target; done=ev>=total;
+    }
+    document.getElementById('goalProg').textContent=done
+      ?`disueltas ✓`
+      :(st.hadAssoc?`disoluciones ${Math.min(prog,total)} / ${total} · vivas ${liveA+liveC}`
+        :`primero teje un coro o lazo · luego disolvé`);
+  } else if(st.type==='unbind'){
+    const now=countStuckPairs();
+    if(now>(st.peak||0)){ st.peak=now; st.hadPeak=true; }
+    const freed=Math.max(0,(st.peak||0)-now);
+    prog=st.hadPeak?freed:0; total=st.target; done=st.hadPeak&&freed>=total;
+    document.getElementById('goalProg').textContent=done
+      ?`lazos aflojados ✓`
+      :(st.hadPeak?`sueltos ${Math.min(prog,total)} / ${total} · stuck ${now}`
+        :`primero uní pares · stuck ${now}`);
+  } else if(st.type==='fuse'){
+    prog=play.fusion-base; total=st.target; done=prog>=total;
+    document.getElementById('goalProg').textContent=`conjunciones ${Math.min(prog,total)} / ${total}`;
+  } else if(st.type==='fuseKind'){
+    prog=(play.byKind[st.kind]||0)-base; total=st.target; done=prog>=total;
+    document.getElementById('goalProg').textContent=`${iconOf(st.kind)} forjadas ${Math.min(prog,total)} / ${total}`;
+  } else if(st.type==='capture'){
+    prog=play.capture-base; total=st.target; done=prog>=total;
+    document.getElementById('goalProg').textContent=`capturas ${Math.min(prog,total)} / ${total}`;
+  } else if(st.type==='fago'){
+    prog=play.fago-base; total=st.target; done=prog>=total;
+    document.getElementById('goalProg').textContent=`incorporadas ${Math.min(prog,total)} / ${total}`;
+  } else if(st.type==='lineage'){
+    prog=play.lineage-base; total=st.target; done=prog>=total;
+    document.getElementById('goalProg').textContent=`linajes ${Math.min(prog,total)} / ${total}`;
+  } else {
+    document.getElementById('goalProg').textContent=st.label||st.type;
+  }
+
+  const stageBase=goal.stage/goal.stages.length;
+  const slice=1/goal.stages.length;
+  document.getElementById('goalFill').style.width=
+    Math.min(100,(stageBase+slice*(total?Math.min(1,prog/total):0))*100).toFixed(1)+'%';
+
+  if(done) advanceGoalStage();
+}
+
+function frame(){
+  try{
+    step();
+    drawField();
+    updateHUD();
+    evaluateGoal();
+  }catch(err){
+    console.error('Éter frame:', err);
+  }
+  requestAnimationFrame(frame);
+}
+
+/* Helper: fijar umbral (escala) y sincronizar UI */
+function setScale(v){
+  scale=Math.max(0,Math.min(1,v));
+  document.getElementById('scale').value=scale;
+}
+
+/* Experiments — umbral bajo media (ensamblaje) para cuánticos; sobre media (dispersión/cristal) para redes */
+function exPacket(){
+  clearAll();
+  setScale(0.12);
+  reach=0.34; document.getElementById('reach').value=reach;
+  const k=placeKind||'e';
+  for(let i=0;i<6;i++){
+    const ang=(i/6)*Math.PI*2, r=0.12;
+    const p=spawn(0.5+Math.cos(ang)*r, 0.5+Math.sin(ang)*r, 0.5, k, {
+      vx:-Math.cos(ang)*0.014, vy:-Math.sin(ang)*0.014, vz:(Math.random()-0.5)*0.003
+    });
+    p.phase=i*0.12;
+  }
+  log('Lab · Susurro — 6 nodos · velo fino · lazo amplio · fusión/conexión');
+  notifySceneInvoke('packet');
+}
+
+function exDouble(){
+  clearAll();
+  setScale(0.16);
+  interf.fill(0);
+  doubleSlitStats={active:true, rearHits:0, bins:new Array(24).fill(0), lastLog:0};
+  barriers.push(...buildPartitionedWall(0.47,0.53, 0.08,0.92, 0.08,0.92, [
+    {y0:0.34,y1:0.44,z0:0.38,z1:0.62},
+    {y0:0.56,y1:0.66,z0:0.38,z1:0.62},
+  ]));
+  const a=spawn(0.18,0.39,0.5,'e',{vx:0.085,vy:0.004,vz:0});
+  const b=spawn(0.18,0.61,0.5,'e',{vx:0.085,vy:-0.004,vz:0});
+  a.phase=0; b.phase=0; a.sigma=0.022*hbar; b.sigma=0.022*hbar;
+  log('Dos Umbrales · Hécate abre dos puertas; los ecos se cuentan detrás');
+}
+function exTunnel(){
+  clearAll();
+  setScale(0.15);
+  interf.fill(0);
+  barriers.push(...buildPartitionedWall(0.48,0.52, 0.08,0.92, 0.08,0.92, []));
+  const p=spawn(0.2,0.5,0.5,'e',{vx:0.095,vy:0,vz:0});
+  p.sigma=0.02*hbar;
+  const q=spawn(0.2,0.55,0.48,'e',{vx:0.09,vy:0,vz:0.005});
+  q.sigma=0.02*hbar;
+  log('Velo de Estigia · sólo el alma sutil cruza; flash al atravesar');
+}
+function exEntangle(){
+  clearAll();
+  setScale(0.14);
+  reach=0.36; document.getElementById('reach').value=reach;
+  const pairs=[[0.38,0.45],[0.62,0.45],[0.38,0.58],[0.62,0.58]];
+  const nodes=[];
+  for(const [x,y] of pairs){
+    const p=spawn(x,y,0.5,'e',{vx:(0.5-x)*0.04, vy:(0.5-y)*0.04});
+    p.phase=0.2;
+    nodes.push(p);
+  }
+  nodes[0].entangledWith=nodes[1].id; nodes[1].entangledWith=nodes[0].id;
+  nodes[2].entangledWith=nodes[3].id; nodes[3].entangledWith=nodes[2].id;
+  nodes[0].phase=nodes[1].phase; nodes[2].phase=nodes[3].phase;
+  log('Lab · Ananké — pares entrelazados · medio vinculante');
+  notifySceneInvoke('entangle');
+}
+
+function exOrbit(){
+  clearAll();
+  setScale(0.15);
+  reach=0.32; document.getElementById('reach').value=reach;
+  spawn(0.5,0.5,0.5,'p',{vx:0,vy:0,vz:0});
+  for(let i=0;i<4;i++){
+    const ang=i*(Math.PI/2)+0.2;
+    spawn(0.5+Math.cos(ang)*0.14, 0.5+Math.sin(ang)*0.14, 0.5, 'e', {
+      vx:-Math.sin(ang)*0.04, vy:Math.cos(ang)*0.04
+    });
+  }
+  log('Lab · Selene — núcleo + 4 almitas · órbita y captura');
+  notifySceneInvoke('orbit');
+}
+
+function exLattice(){
+  clearAll();
+  setScale(0.18); // fino: estimula red y fusiones (antes dispersivo)
+  reach=0.36; document.getElementById('reach').value=reach;
+  const k=placeKind||'H';
+  for(let ix=0; ix<3; ix++){
+    for(let iy=0; iy<3; iy++){
+      const p=spawn(0.34+ix*0.16, 0.34+iy*0.16, 0.5, k, {
+        vx:(Math.random()-0.5)*0.008, vy:(Math.random()-0.5)*0.008, vz:(Math.random()-0.5)*0.004
+      });
+      p.phase=0.25+ix*0.05+iy*0.03;
+    }
+  }
+  log('Lab · Telar — 9 × '+kindMeta[k].name+' · velo fino · red de conexiones');
+  notifySceneInvoke('lattice');
+}
+
+function exMolecule(){
+  clearAll();
+  setScale(0.10);
+  reach=0.38; document.getElementById('reach').value=reach;
+  const k=placeKind||'H';
+  const n=7;
+  for(let i=0;i<n;i++){
+    const ang=(i/n)*Math.PI*2, r=0.13;
+    const p=spawn(0.5+Math.cos(ang)*r, 0.5+Math.sin(ang)*r, 0.48+0.04*Math.sin(i), k, {
+      vx:-Math.cos(ang)*0.016, vy:-Math.sin(ang)*0.016, vz:0
+    });
+    p.phase=i*0.08;
+  }
+  log('Lab · Coro — 7 × '+kindMeta[k].name+' · máximo vínculo · nucleación');
+  notifySceneInvoke('molecule');
+}
+
+function exFission(){
+  clearAll();
+  setScale(0.12);
+  reach=0.34; document.getElementById('reach').value=reach;
+  const k=placeKind||'H';
+  for(let i=0;i<5;i++){
+    const ang=(i/5)*Math.PI*2, r=0.09;
+    const p=spawn(0.5+Math.cos(ang)*r, 0.5+Math.sin(ang)*r, 0.5, k, {
+      vx:-Math.cos(ang)*0.01, vy:-Math.sin(ang)*0.01
+    });
+    p.phase=0.1;
+  }
+  // tras formar coro, luciérnaga para estudiar ruptura (no como "objetivo")
+  setTimeout(()=>{
+    if(particles.length) spawn(0.5,0.5,0.72,'γ',{vx:0,vy:0,vz:-0.04});
+  }, 1600);
+  log('Lab · Febo — cluster + ✦ diferida · formación y fisión');
+  notifySceneInvoke('fission');
+}
+
+/* UI */
+document.querySelectorAll('.el').forEach(btn=>{
+  btn.onclick=()=>{document.querySelectorAll('.el').forEach(b=>b.classList.remove('on'));btn.classList.add('on');placeKind=btn.dataset.k;if(typeof fillAttrTable==='function')fillAttrTable();};
+});
+document.getElementById('btnClear').onclick=()=>{spendMove(1); clearAll();};
+document.getElementById('btnPulse').onclick=function(){pulseM=!pulseM;this.classList.toggle('on',pulseM)};
+
+if(false){document.getElementById("btnRetry");
+  if(goal&&goal.movesMax){
+    const g=Object.assign({}, goal, {
+      won:false, lost:false, stage:0, stars:0, startedAt:time,
+      moves:goal.movesMax, stages:goal.stages.map(s=>({...s, hadTarget:false, base:0}))
+    });
+    clearAll();
+    setGoal(g);
+  } else setGoal(makeGoal());
+};
+document.getElementById('scale').oninput=e=>{scale=+e.target.value};
+document.getElementById('m').oninput=e=>{mantisa=+e.target.value;pulseM=false};
+document.getElementById('hbar').oninput=e=>{hbar=+e.target.value};
+document.getElementById('reach').oninput=e=>{reach=+e.target.value};
+document.getElementById('kT').oninput=e=>{langevinKT=+e.target.value};
+document.getElementById('gamma').oninput=e=>{langevinGamma=+e.target.value};
+document.getElementById('btnLangevin').onclick=function(){
+  langevinOn=!langevinOn;
+  this.classList.toggle('on',langevinOn);
+  this.textContent=langevinOn?'Marea ON':'Marea OFF · éter quieto';
+};
+
+// Múltiples punteros activos: permite distinguir arrastre de 1 dedo (rotar/tap)
+// de pellizco de 2 dedos (zoom táctil), que antes no existía en absoluto.
+const activePointers=new Map(); // pointerId -> {x,y}
+let pinchStartDist=null, pinchStartZoom=1;
+
+canvas.addEventListener('pointerdown',e=>{
+  activePointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  canvas.setPointerCapture(e.pointerId);
+  if(activePointers.size===1){
+    dragging=true; moved=false; lastPtr={x:e.clientX,y:e.clientY};
+  } else if(activePointers.size===2){
+    dragging=false; // dos dedos: pasamos a modo pellizco, cancelamos rotación/tap
+    const pts=[...activePointers.values()];
+    pinchStartDist=Math.hypot(pts[0].x-pts[1].x, pts[0].y-pts[1].y);
+    pinchStartZoom=zoom;
+  }
+});
+canvas.addEventListener('pointermove',e=>{
+  if(!activePointers.has(e.pointerId)) return;
+  activePointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const r=canvas.getBoundingClientRect();
+  pointerAim={nx:(e.clientX-r.left)/r.width, ny:(e.clientY-r.top)/r.height};
+  if(activePointers.size>=2){
+    const pts=[...activePointers.values()];
+    const dist=Math.hypot(pts[0].x-pts[1].x, pts[0].y-pts[1].y);
+    if(pinchStartDist) zoom=Math.max(0.85,Math.min(5.5, pinchStartZoom*(dist/pinchStartDist)));
+    moved=true;
+    return;
+  }
+  if(!dragging||!lastPtr) return;
+  const dx=e.clientX-lastPtr.x, dy=e.clientY-lastPtr.y;
+  if(Math.hypot(dx,dy)>3) moved=true;
+  // arrastre = rotación 3D del tablero (restaurada)
+  rotY+=dx*0.008; rotX+=dy*0.008;
+  const dImp=Math.hypot(dx,dy)*0.0022;
+  impulse=Math.min(1,impulse+dImp); // arrastre → J (shock dosificable)
+  // emisor: el arrastre también es fuga desde el foco de vista / último aim
+  if(pointerAim && dImp>0.002){
+    const wx=0.15+pointerAim.nx*0.7;
+    const wy=0.15+pointerAim.ny*0.7;
+    noteEmission(wx, wy, 0.5, Math.min(0.85, 0.25+dImp*8), 'drag');
+  }
+  lastPtr={x:e.clientX,y:e.clientY};
+});
+canvas.addEventListener('pointerup',e=>{
+  activePointers.delete(e.pointerId);
+  if(activePointers.size<2) pinchStartDist=null;
+  if(activePointers.size===0){
+    if(!moved){
+      // cada click invoca un alma; la primera (si agar está on) es la jugadora
+      const r=canvas.getBoundingClientRect();
+      pointerAim={nx:(e.clientX-r.left)/r.width, ny:(e.clientY-r.top)/r.height};
+      const w=screenToWorld(e.clientX, e.clientY);
+      const p=spawn(w.x, w.y, w.z, placeKind);
+      if(agarOn && !getPlayer()){
+        p.isPlayer=true;
+        p.decayAt=null;
+        playerId=p.id;
+        log('Jugás · '+kindMeta[p.kind].name+' #'+p.id);
+      }
+    }
+    dragging=false; lastPtr=null;
+  } else if(activePointers.size===1){
+    const remaining=[...activePointers.values()][0];
+    dragging=true; moved=true;
+    lastPtr={x:remaining.x,y:remaining.y};
+  }
+});
+addEventListener('keydown',e=>{
+  if(e.code==='Space'){ e.preventDefault(); agarSplit(); }
+  if(e.key==='g'||e.key==='G'){ agarOn=!agarOn; log(agarOn?'Agar ON':'Agar OFF'); }
+  if(e.key==='h'||e.key==='H'){
+    const modes=['bary','player','center'];
+    const i=modes.indexOf(scaleExp.hitoMode);
+    scaleExp.hitoMode=modes[(i+1)%modes.length];
+    scaleExp.stableFrames=0;
+    scaleExp.histRStar=[];
+    log('Hito · '+scaleExp.hitoMode);
+  }
+});
+canvas.addEventListener('pointercancel',e=>{
+  activePointers.delete(e.pointerId);
+  if(activePointers.size<2) pinchStartDist=null;
+});
+canvas.addEventListener('wheel',e=>{
+  e.preventDefault();
+  if(e.ctrlKey){
+    // trackpad: el pellizco llega como wheel+ctrlKey — lo tratamos como zoom, no como escala
+    zoom=Math.max(0.85,Math.min(5.5,zoom*Math.exp(-e.deltaY*0.01)));
+  } else if(e.shiftKey){
+    scale=Math.max(0,Math.min(1,scale+e.deltaY*0.0012));
+    document.getElementById('scale').value=scale;
+    impulse=Math.min(1,impulse+0.05);
+  } else {
+    zoom=Math.max(0.85,Math.min(5.5,zoom*Math.exp(-e.deltaY*0.0015)));
+  }
+},{passive:false});
+
+/* Ficha: escenarios + etiquetas de medio */
+document.querySelectorAll('#sceneGrid .scene-cell').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('#sceneGrid .scene-cell').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    const fn=btn.dataset.ex;
+    const map={exPacket,exEntangle,exOrbit,exLattice,exMolecule,exFission};
+    if(fn&&map[fn]) map[fn]();
+  });
+});
+function bindMedioLabel(id, lb){
+  const el=document.getElementById(id), L=document.getElementById(lb);
+  if(!el||!L) return;
+  const sync=()=>{ L.textContent=(+el.value).toFixed(2); };
+  el.addEventListener('input', sync); sync();
+}
+bindMedioLabel('scale','lbScale');
+bindMedioLabel('m','lbM');
+bindMedioLabel('hbar','lbHbar');
+bindMedioLabel('reach','lbReach');
+bindMedioLabel('kT','lbKT');
+bindMedioLabel('gamma','lbGamma');
+
+function spendMove(n=1){ return true; }
+
+try{
+  resize();
+  spawn(0.4,0.5,0.5,'e',{vx:0.03});
+  spawn(0.6,0.5,0.5,'p',{vx:-0.01});
+  spawn(0.5,0.28,0.62,'Ψ',{vx:0.01,vy:0.015,vz:-0.005});
+  log('Laboratorio · red relacional · sin destinos');
+  fillAttrTable();
+}catch(err){
+  console.error('Éter init:', err);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
